@@ -1,0 +1,135 @@
+
+
+# typeof
+
+```jsx
+typeof(typeof(a));   //'string'
+typeof(null);        //'object'
+typeof(undefined);   //undefined
+typeof(new Date());  //'object'
+typeof(NaN);         //'number'
+typeof(+ '123');     //'number'
+
+```
+
+# String
+
+```jsx
+String(function() {});
+String(null);
+String(undefined);
+```
+
+# Number
+
+```jsx
+Number(null);      //0
+Number(undefined); //NaN
+Number('3a');      //NaN
+Number(NaN);       //NaN
+Number(false);     //0
+Number(true);      //1
+Number({});        //NaN 解释：({}).toString() = '[object Object]' => Number('[object Object]')
+Number([]);        //0 解释：[].toString() = '' => Number('')=0
+Number([2]);       //2 解释：[2].toString() = '2' => Number('2')=2
+Number([2,3,4]);   //NaN
+```
+
+> 针对Number({})=NaN 等的解释
+> 
+> 
+> > 如果valueOf返回原始值，直接用Number包装后返回
+> > 
+> > 
+> > 如果valueOf返回对象，去找toString方法
+> > 
+> > 如果toString返回原始值，直接用Number包装后返回，如果没有返回原始值，报错（一般不会出现）
+> > 
+> > 如果没有重写toString，调用Object.prototype.toString()
+> > 
+
+```jsx
+var obj = {
+  toString() {
+      return {};
+  },
+  valueOf() {
+      return {}
+  }
+}
+console.log(Number(obj))
+❌ Uncaught TypeError: Cannot convert object to primitive value
+```
+
+String
+
+```jsx
+var obj = {
+  toString() {
+      return {};
+  },
+  valueOf() {
+      return '123';
+  }
+}
+console.log(String(obj))
+```
+
+# 比较运算符 < > ==
+
+```jsx
+NaN == NaN;          //false
+NaN > 0;             //false
+null == undefined;   //true
+null == 0;           //false
+null > 0;            //false
+null < 0;            //false
+undefined == 0;      //false
+undefined > 0;       //false
+undefined < 0;       //false
+**'89' > '9';          //false**
+'89' > 9;            //true
+'0' == false;        //true
+'1' == true;         //true
+{} == {};            //false 因为引用值对比的是地址，两个空对象保存在不同的地址中
+[] == ![];
+{} == !{};
+1 == true;           //Number(true)
+'1' == 1;            //Number('1')
+'1' == true;         //Number(true)
+```
+
+> null, undefined 除了与自己相等==，与其它一律不等
+> 
+> 
+> == 运算符 全部做Number转换
+> 
+
+> 解释`[] == ![]`
+> 
+> 
+> Number([]) → Array.prototype.toString → ‘’ → Number(’’) → 0
+> 
+> ![] == false
+> 
+> falsey的值包含 undefined null 0 NaN ‘’ false
+> 
+
+```jsx
+console.log([] + {})
+console.log({} + [])
+console.log([] + [])
+console.log({} + {})
+//[object Object]
+//[object Object]
+''
+//[object Object][object Object]
+```
+
+> 关于第四条解释：
+> 
+> 
+> 等效于 `{}.toString() + {}.toString()`
+> 
+> `{}.toString()` 等效于 `Object.prototype.toString.call({})`
+>

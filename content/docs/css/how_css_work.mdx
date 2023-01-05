@@ -1,0 +1,37 @@
+---
+title: "how css work"
+---
+
+- What happens to css when we load up a webpage
+
+<Image src="/images/css/what_happens_to_css.png" height='400' width='700' alt="what_happens_to_css.png" />
+
+- which one take precedence
+
+<Image src="/images/css/which_one_take_precedence.png" height='400' width='700' alt="which_one_take_precedence.png" />
+
+```css
+// inline IDs Classes Elements
+// (0, 0, 1, 0) 
+.button{
+	font-size: 20px;
+	color: white;
+}
+
+//(0, 1, 2, 2)
+nav#nav div.pull-right .button {
+	background-color: green;
+}
+
+//(0, 0, 0, 1)
+a{
+	background-color: purple;
+}
+
+//(0, 1, 2, 1)
+#nav a.button:hover {
+	background-color: red;
+}
+```
+
+根据优先级规则，最终2胜出

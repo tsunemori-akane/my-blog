@@ -1,0 +1,101 @@
+---
+title: "react-router-dom"
+---
+
+## React-router 的三个主要工作
+- Subscribing and manipulating the **history stack**.<br/>
+  > what is **history stack**, try to hold the back button in a browser you can see the browser's history stack right there.
+- Matching the URL to your **routes**.<br/>
+  > what is **routes**, a tree of routes objects that will be ranked and matched(with nesting).
+- Rendering a nested UI from the route matches(An array of routes of the route config that matches the current location.)
+
+## About the history stack
+There are five steps
+1. clicks a link to /dashboard
+2. clicks a link to /accounts
+3. clicks a link to /customers/123
+4. clicks the back button
+5. clicks a link to /dashboard
+   
+The history stack will change as follows where **bold** entries denote the current URL
+
+1. `/dashboard`
+2. /dashboard, `/accounts`
+3. /dashboard, /accounts, `/customers/123`
+4. /dashboard, `/accounts`, /customers/123
+5. /dashboard, /accounts, `/dashboard`
+   
+## History object
+- 客户端渲染中，通过`window.history.pushState`可以改变URL，但是对UI没做什么事情，而且浏览器没有给出合适的监听URL变化的方法。
+```javascript
+window.addEventListener("popstate", () => {
+  // URL changed!
+});
+```
+- 该事件监听仅仅在用户点击前进后退按钮才会被触发。`window.history.pushState` 和 `window.history.replaceState` 不会触发`popstate`事件
+- 于是React-router中特制的“history”亮相了
+```javascript
+let history = createBrowserHistory();
+history.listen(({ location, action }) => {
+  // this is called whenever new locations come in
+  // the action is POP, PUSH, or REPLACE
+});
+```
+- Apps don't need to set up their own history objects--that's job of `<Router>`. It sets up one of these objects, subscribe to changes in the history stack, and finally updates its state when the URL changes. This causes the app to re-render and the correct UI to display. The only thing it needs to put on state is a location, everything else works from that single object.
+
+## Locations
+- the location concept in **React Router**
+```javascript
+let location =
+{
+  pathname: "/bbq/pig-pickins",
+  search: "?campaign=instagram&popular=true",
+  hash: "#menu",
+  state: null,
+  key: "aefz24ie"
+};
+```
+一般来讲 `URL = locaiton.pathname + location.search + location.hash`
+
+### About Location's properties
+- `location search` 取值
+```javascript
+// we can turn the location.search into URLSearchParams
+let params = new URLSearchParams(location.search);
+params.get("campaign"); // "instagram"
+params.get("popular"); // "true"
+params.toString(); // "campaign=instagram&popular=true",
+```
+- `location state` 的使用
+```javascript
+<Link to="/pins/123" state={{ fromDashboard: true }} />;
+
+let navigate = useNavigate();
+navigate("/users/123", { state: partialUser });
+//next page
+let location = useLocation();
+location.state;
+```
+- `location key`
+Example: a very basic client side data cache could store values by location key and skip fetching the data when user clicks back into it
+
+## Two ways to navigating in React Router
+- `<Link>`
+- `navigate`
+
+
+## Router Components
+`BrowserRouter` 
+
+- Type declaration
+```typescript
+declare function BrowserRoute(props: BrowserRouterProps): React.ReactElement
+
+interface BrowserRouterProps {
+  basename?: string;
+  children?: React:ReactNode;
+  window?: Window;
+}
+```
+- `<BrowserRouter>` create a **history**, puts the initial location in to state, and subscribe to the URL.
+  > the **history** is an object that allows react router to subscribe to changes in the URL as well as providing APIs to manipulate the browser **history stack** programmatically.
