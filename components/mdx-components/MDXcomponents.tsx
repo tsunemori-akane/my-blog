@@ -5,62 +5,51 @@ import { Card } from './card'
 import { Callout } from './callout'
 import { Pre } from './pre'
 import Image from 'next/image'
+import { ReactElement, ComponentProps} from 'react'
+
+const createHeaderLink = (
+  Tag: `h${1 | 2 | 3 | 4 | 5 | 6}`,
+  context: { index: number }
+) =>
+  function HeaderLink({
+    children,
+    id,
+    className,
+    ...props
+  }: ComponentProps<'h2'>): ReactElement {
+  
+    return (
+      <Tag
+        className={cn(
+          'font-semibold tracking-tight',
+          {
+            h1: `mt-2 scroll-m-20 text-4xl font-bold ${className}`,
+            h2: `mt-10 scroll-m-20 border-b border-b-slate-200 pb-1 text-3xl first:mt-0 ${className}`,
+            h3: `mt-8 scroll-m-20 text-2xl ${className}`,
+            h4: `mt-8 scroll-m-20 text-xl ${className}`,
+            h5: `mt-8 scroll-m-20 text-lg ${className}`,
+            h6: `mt-8 scroll-m-20 text-base ${className}`
+          }[Tag]
+        )}
+        {...props}
+      >
+        {children}
+        {/* <a
+          href={`#${id}`}
+          className="subheading-anchor"
+          aria-label="Permalink for this section"
+        /> */}
+      </Tag>
+    )
+  }
 
 export const MDXcomponents = {
-  h1: ({ className, ...props }) => (
-    <h1
-      className={cn(
-        "mt-2 scroll-m-20 text-4xl font-bold tracking-tight",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h2: ({ className, ...props }) => (
-    <h2
-      className={cn(
-        "mt-10 scroll-m-20 border-b border-b-slate-200 pb-1 text-3xl font-semibold tracking-tight first:mt-0",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h3: ({ className, ...props }) => (
-    <h3
-      className={cn(
-        "mt-8 scroll-m-20 text-2xl font-semibold tracking-tight",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h4: ({ className, ...props }) => (
-    <h4
-      className={cn(
-        "mt-8 scroll-m-20 text-xl font-semibold tracking-tight",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h5: ({ className, ...props }) => (
-    <h5
-      className={cn(
-        "mt-8 scroll-m-20 text-lg font-semibold tracking-tight",
-        className
-      )}
-      {...props}
-    />
-  ),
-  h6: ({ className, ...props }) => (
-    <h6
-      className={cn(
-        "mt-8 scroll-m-20 text-base font-semibold tracking-tight",
-        className
-      )}
-      {...props}
-    />
-  ),
+  h1: createHeaderLink('h1'),
+  h2: createHeaderLink('h2'),
+  h3: createHeaderLink('h3'),
+  h4: createHeaderLink('h4'),
+  h5: createHeaderLink('h5'),
+  h6: createHeaderLink('h6'),
   a: ({ className, ...props }) => (
     <a
       className={cn(

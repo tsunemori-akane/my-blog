@@ -3,7 +3,6 @@
 import React, { useRef, useState, useEffect} from 'react';
 import { cn } from '#/lib/utils';
 import { useRouter } from 'next/router';
-import useMenuContext from '../../utils/menu-context';
 import { usePathname } from 'next/navigation';
 
 const TreeState: Record<string, boolean> = Object.create(null)
