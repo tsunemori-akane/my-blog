@@ -7,6 +7,9 @@ const nextConfig = {
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   reactStrictMode: true,
   swcMinify: true,
+  images: {
+    unoptimized: true,
+  }
 }
 
 module.exports = withBundleAnalyzer(nextConfig)
