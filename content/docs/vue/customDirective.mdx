@@ -1,0 +1,39 @@
+## Vue 2版本案例
+- 按钮级别权限控制
+```js title="permission.js" showLineNumbers {3, 25, 28}
+import store from '@/store'
+
+function checkPermission(el, binding) {
+  const { value } = binding
+  const roles = store.getters && store.getters.roles
+
+  if (value && value instanceof Array) {
+    if (value.length > 0) {
+      const permissionRoles = value
+
+      const hasPermission = roles.some(role => {
+        return permissionRoles.includes(role)
+      })
+
+      if (!hasPermission) {
+        el.parentNode && el.parentNode.removeChild(el)
+      }
+    }
+  } else {
+    throw new Error(`need roles! Like v-permission="['admin','editor']"`)
+  }
+}
+
+export default {
+  inserted(el, binding) {
+    checkPermission(el, binding)
+  },
+  update(el, binding) {
+    checkPermission(el, binding)
+  }
+}
+```
+
+<Callout>
+[hook functions](https://v2.vuejs.org/v2/guide/custom-directive.html#Hook-Functions): `bind` `inserted` `update` `componentUpdated` `unbind`
+</Callout>

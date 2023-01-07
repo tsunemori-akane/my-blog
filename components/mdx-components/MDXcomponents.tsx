@@ -8,8 +8,7 @@ import Image from 'next/image'
 import { ReactElement, ComponentProps} from 'react'
 
 const createHeaderLink = (
-  Tag: `h${1 | 2 | 3 | 4 | 5 | 6}`,
-  context: { index: number }
+  Tag: `h${1 | 2 | 3 | 4 | 5 | 6}`
 ) =>
   function HeaderLink({
     children,
@@ -53,7 +52,7 @@ export const MDXcomponents = {
   a: ({ className, ...props }) => (
     <a
       className={cn(
-        "font-medium text-slate-900 underline underline-offset-4",
+        "font-medium text-slate-900 underline underline-offset-4 text-cyan-500",
         className
       )}
       {...props}
@@ -66,7 +65,7 @@ export const MDXcomponents = {
     />
   ),
   ul: ({ className, ...props }) => (
-    <ul className={cn("my-6 ml-6 list-disc", className)} {...props} />
+    <ul className={cn("my-2 ml-6 list-disc", className)} {...props} />
   ),
   ol: ({ className, ...props }) => (
     <ol className={cn("my-6 ml-6 list-decimal", className)} {...props} />
@@ -129,6 +128,15 @@ export const MDXcomponents = {
       )}
       {...props}
     />
+  ),
+  code: ({ className, ...props }) => (
+    <code 
+      className={cn(
+        'border-black border-opacity-10 bg-opacity-10 bg-black break-words rounded-md border py-0.5 px-[.25em] text-[.9em]',
+        className
+      )}
+      {...props}
+    ></code>
   ),
   pre: Pre,
   Image,

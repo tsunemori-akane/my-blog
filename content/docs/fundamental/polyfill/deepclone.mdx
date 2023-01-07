@@ -1,0 +1,70 @@
+## JSON方法
+<Callout>
+  - `JSON.parse(JSON.stringfy())`可用作一般对象拷贝
+  - `JSON.stringfy()`会破坏函数类型，Date类型
+</Callout>
+
+```js
+var obj = {
+	name:'abc',
+	test() {return 1}
+}
+JSON.stringify(obj) //'{"name":"abc"}'
+
+var obj = {
+	name:'abc',
+	toJSON() {return 1}
+}
+JSON.stringify(obj) //'1'
+```
+
+## polyfill
+ES5简单实现
+```js
+function deepClone(origin, target) {
+    var tar = target || {};
+    var toStr = Object.prototype.toString;
+    var arrType = '[object Array]';
+
+    for(var k in origin) {
+        if(origin.hasOwnProperty(k)) {
+            if(typeof origin[k] === 'object' && origin[k] !== null) {
+                tar[k] = toStr.call(origin[k]) === arrType ? [] : {};
+                deepClone(origin[k], tar[k]);
+            } else {
+                tar[k] = origin[k];
+            }
+        }
+    }
+    return tar;
+}
+```
+ES6 使用WeakMap避免循环引用(WeakMap键名只能是 对象)
+```js
+function deepCloneWithMap(origin, map = new WeakMap()) {
+    //null undefined 以及原始值类型直接返回
+    if(origin == undefined || typeof origin !== 'object') {
+        return origin;
+    }
+    if(origin instanceof Date) {
+        return new Date(origin);
+    }
+    if(origin instanceof RegExp) {
+        return new RegExp(origin);
+    }
+    //解决循环引用问题
+    if (map.get(origin)) {
+        return map.get(origin);
+    }
+
+    const target = new origin.constructor();
+    map.set(origin, target);
+
+    for(let k in origin) {
+        if(origin.hasOwnProperty(k)) {
+            target[k] = deepCloneWithMap(origin[k], map);
+        }
+    }
+    return target;
+}
+```
