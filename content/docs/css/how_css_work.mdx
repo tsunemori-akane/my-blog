@@ -1,11 +1,61 @@
 ---
 title: "how css work"
 ---
-
+## 网页生成过程
 - What happens to css when we load up a webpage
 
 <Image src="/images/css/what_happens_to_css.png" height='400' width='700' alt="what_happens_to_css.png" />
 
+## 回流与重绘建议
+<Callout>
+	上图中最后两步最耗时, 而回流会引起布局重新绘制, 正好需要重复后两步, 因而需要尽量减少回流次数或者范围.
+</Callout>
+- 下面两块代码为何回流次数不同?
+<div className="grid grid-cols-2 gap-4">
+	<div>
+		```javascript
+		//一次回流
+		div.style.left = '10px';
+		div.style.top = '10px';
+		div.style.width = '20px';
+		div.style.height = '20px';
+
+
+
+
+		```
+	</div>
+	<div>
+		```javascript
+		//四次回流
+		div.style.left = '10px';
+		console.log(div.offsetLeft);
+		div.style.top = '10px';
+		console.log(div.offsetTop);
+		div.style.width = '20px';
+		console.log(div.offsetWidth);
+		div.style.height = '20px';
+		console.log(div.offsetHeight);
+		```
+	</div>
+</div>
+<Callout>
+	得益于浏览器的渲染队列机制, 左边会把该操作放进渲染队列,等到队列中的操作到了一定的数量或者到了一定的时间间隔时,浏览器就会批量执行这些操作。
+	而右边代码块在console中你请求的这几个样式信息, 无论何时浏览器都会立即执行渲染队列的任务, 即使该值与你操作中修改的值没关联。
+</Callout>
+
+| 常见引起回流的属性与方法 |-|-|-|
+| - | - | - | - |
+|height|width|margin|padding|
+|display|border|position|overflow|
+|clientWidth|clientHeight|clientTop|clientLeft|
+|offsetHeight|offsetLeft|offsetTop|offsetWidth|
+|scrollWidth|scrollHeigth|scrollTop|scrollLeft|
+|scrollTo|getComputedStyle|getBoundingClientRect||
+### 回流优化
+- 通过改变`class` 或者 `csstext`属性集中改变样式
+- 操作dom之前通过display隐藏dom, 操作完成后再将元素设置为可见, 因为不可见的元素不会触发重排和重绘。通过使用`DocumentFragment`创建一个dom碎片,在它上面批量操作dom,操作完成之后,再添加到文档中,这样只会触发一次重排。
+## 权重
 - which one take precedence
 
 <Image src="/images/css/which_one_take_precedence.png" height='400' width='700' alt="which_one_take_precedence.png" />
@@ -34,4 +84,4 @@ a{
 }
 ```
 
-根据优先级规则，最终2胜出
+根据优先级规则,最终2胜出
