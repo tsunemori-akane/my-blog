@@ -1,0 +1,10 @@
+.blocklink:hover svg {
+  color: currentColor;
+}
+
+.blocklink svg {
+  width: 1.5rem;
+  color: #00000033;
+  transition: color 0.3s ease;
+}
+

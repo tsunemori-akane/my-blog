@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useState, useEffect} from 'react';
+import React, { useRef, useState, useEffect, memo} from 'react';
 import { cn } from '#/lib/utils';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
@@ -117,7 +117,9 @@ function Collapse({children, open}) {
     </div>
   )
 }
-function Folder ({item}) {
+
+const Folder = memo(FolderImpl)
+function FolderImpl ({item}) {
   const pathname = usePathname()
   const focusedRouteInside = pathname.startsWith(item.prefix || '' + '/')
   // console.log("pathname:", pathname)
