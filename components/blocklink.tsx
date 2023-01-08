@@ -2,7 +2,7 @@ import Link from "next/link"
 import { cn } from "#/lib/utils"
 import styles from './blocklink.module.css'
 
-export function BlockLink({children, href, icon, title}) {
+export function BlockLink({ href, icon, title}) {
   return (
     <Link
       href='#'
@@ -12,7 +12,6 @@ export function BlockLink({children, href, icon, title}) {
         'active:shadow-sm active:shadow-gray-200'
       )}
     >
-      {children}
       <span
         className={cn(
           'flex gap-2 p-4 font-bold',
