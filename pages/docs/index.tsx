@@ -12,7 +12,7 @@ export default function Page() {
             {
               DocsMainPageRoute.map(e => {
                 return (
-                  <BlockLink key={e.title} icon={<e.icon/>} title={e.title} />
+                  <BlockLink key={e.title} icon={<e.icon/>} title={e.title} href={e.href} />
                 )
                 
               })

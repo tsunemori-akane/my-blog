@@ -9,6 +9,7 @@ export const DocsMainPageRoute = [
       )
     },
     title: 'Fundamentals',
+    href: '#'
   },
   {
     icon: () => {
@@ -18,7 +19,8 @@ export const DocsMainPageRoute = [
         </svg>
       )
     },
-    title: "Css"
+    title: "Css",
+    href: '#'
   },
   {
     icon: () => {
@@ -32,7 +34,8 @@ export const DocsMainPageRoute = [
         </svg>
       )
     },
-    title: 'React'
+    title: 'React',
+    href: '#'
   },
   {
     icon: () => {
@@ -42,6 +45,7 @@ export const DocsMainPageRoute = [
         </svg>
       )
     },
-    title: 'Vue'
+    title: 'Vue',
+    href: '#'
   }
 ]
