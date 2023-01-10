@@ -72,6 +72,10 @@ const react =
       description: "路由"
     },
     {
+      name: "Components",
+      route: "/docs/react/react_components",
+    },
+    {
       name: "Fiber架构",
       prefix: "/docs/react/fiber",
       children: [
@@ -92,8 +96,11 @@ const vue = {
     {
       name: '自定义指令',
       route: '/docs/vue/customDirective'
+    },
+    {
+      name: 'Vue Loader',
+      route: '/docs/vue/vue_loader'
     }
-    
   ]
 }
 
