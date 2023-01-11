@@ -13,6 +13,7 @@ import rehypeCitation from 'rehype-citation'
 //import rehypePrismPlus from 'rehype-prism-plus'
 import rehypePresetMinify from 'rehype-preset-minify'
 import rehypePrettyCode from 'rehype-pretty-code'
+//import cssModulesPlugin from 'esbuild-css-modules-plugin'
 
 const root = process.cwd()
 
@@ -34,6 +35,7 @@ export async function getFileBySlug(type, slug) {
 
   const { code, frontmatter } = await bundleMDX({
     source,
+    cwd: path.join(root, 'components/demo'),
     mdxOptions(options, frontmatter) {
       // this is the recommended way to add custom remark/rehype plugins:
       // The syntax might look weird, but it protects you in case we add/remove
@@ -78,6 +80,16 @@ export async function getFileBySlug(type, slug) {
         ],
         rehypePresetMinify,
       ]
+      return options
+    },
+    esbuildOptions: (options) => {
+      // options.plugins = [
+      //   cssModulesPlugin()
+      // ],
+      options.loader = {
+        ...options.loader,
+        '.tsx': 'tsx'
+      }
       return options
     },
   })

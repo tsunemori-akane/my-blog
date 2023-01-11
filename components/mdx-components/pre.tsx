@@ -70,7 +70,7 @@ export const Pre = (props) => {
           </button>
         )}
 
-        <pre className="mt-6 mb-4 overflow-x-auto rounded-lg bg-slate-900 py-4">
+        <pre className="mt-4 mb-4 overflow-x-auto rounded-lg bg-slate-900 py-4">
           <code className='relative rounded border bg-slate-300 bg-opacity-25 py-[0.2rem] px-[0.3rem] font-mono text-sm text-slate-600'>
             {props.children}
           </code>

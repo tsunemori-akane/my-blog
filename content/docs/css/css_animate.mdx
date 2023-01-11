@@ -1,0 +1,124 @@
+import Loading from './loading'
+
+## transform
+```css
+transform: scale(2);
+transform-origin: 0 0; /*等于transform-origin: left top*/
+```
+- transform有多个function的情况
+```css
+transform: rotate(90deg) translateX(100px);/*最终元素移动方向为正下方100px*/
+transform: translateX(100px) rotate(90deg);/*最终元素移动方向为正右方100px*/
+```
+
+## transition
+```css
+transition: background 1.5s ease-in 1;
+/* 从左到右
+transition-property
+transition-duration
+transition-timing-function
+transition-delay
+*/
+```
+<Callout>缺点: 无法在网页加载完毕后自动触发,只能手动触发,hover、click之类的,而且不能定义中间状态</Callout>
+
+### 案例
+<div className="group relative flex items-center justify-center rounded-lg overflow-hidden w-56 sm:w-96 mx-auto mt-4"> 
+  <div className="group-hover:transition-all group-hover:ease-in group-hover:duration-300 group-hover:grayscale group-hover:opacity-70 w-full h-48 bg-cover bg-no-repeat bg-center bg-[url(https://images.unsplash.com/photo-1554629947-334ff61d85dc?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=512&h=640&q=80)]"></div>
+
+  <svg 
+    className="w-8 h-8 absolute left-1/2 top-2/4 scale-0 group-hover:-translate-x-2/4 group-hover:-translate-y-1/2 group-hover:scale-100 cursor-pointer"
+    viewBox="0 0 1193 1024" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1219.222 399.466l2.050 1.623q-1.011-0.853-2.050-1.623zM-30.103 401.8l3.7-2.931c-4.441 3.091-8.067 7.040-10.699 11.633z" fill="#ffffff"></path>
+    <path d="M100.042 1017.461c-0.327 2.191-0.668 4.368-0.968 6.575 0.616-2.339 0.979-5.028 1-7.798zM67.239 1048.77zM34.479 1013.491q0.355-2.461 0.74-4.925c-0.5 2.085-0.798 4.485-0.825 6.952z" fill="#ffffff"></path>
+    <path d="M1157.571 1005.848c0.412 2.576 0.783 5.166 1.153 7.755-0.103-3.11-0.605-6.063-1.461-8.861zM1091.725 1022.769c-0.283-2.035-0.584-4.055-0.897-6.076 0.158 2.781 0.629 5.388 1.374 7.874z" fill="#ffffff"></path>
+    <path d="M1094.77 93.108h-214.096l-84.406-108.386c-4.542-5.8-11.545-9.492-19.411-9.492-0.005 0-0.010 0-0.016 0h-349.52c-0.003 0-0.006 0-0.009 0-8.107 0-15.294 3.925-19.768 9.981l-79.458 107.912h-231.075c-49.921 0.031-90.383 40.481-90.44 90.392v663.342c0.049 49.924 40.514 90.379 90.437 90.412h997.761c49.926-0.031 90.391-40.489 90.44-90.408v-663.341c-0.065-49.917-40.521-90.363-90.435-90.412zM608.229 797.459c-153.4 0-278.181-124.78-278.181-278.181s124.78-278.181 278.181-278.181 278.181 124.78 278.181 278.181-124.78 278.181-278.181 278.181zM989.627 302.209c-19.908 0-36.047-16.138-36.047-36.047 0-19.908 16.138-36.047 36.047-36.047 19.903 0 36.040 16.131 36.047 36.033-0.008 19.906-16.142 36.040-36.047 36.048z" fill="#ffffff"></path>
+  </svg>
+</div>
+
+- 上图关键属性
+```css
+i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: scale(0);
+}
+
+bg:hover i{
+  transform: translate(-50%, -50%) scale(1);
+}
+bg:hover {
+  opacity: 0.7;
+  filter: grayscale(100%);
+  transition: all 300ms cubic-bezier(0,0,0.2,1) 0;
+}
+```
+
+## Keyframe
+- 8 sub-properties
+
+> `animation-name` `animation-duration` `animation-timing-function` 
+> `animation-delay` `animation-interation-count` 
+> `animation-direction(forward, reverse, alternate)`
+> `animation-fill-mode`
+> `animation-play-state`
+
+### 案例
+
+<Loading></Loading>
+
+```css /coloredspin/
+/* <div class="loader"></div> */
+.loader {
+    margin: auto;
+    border: 16px solid #bdc3c7;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    animation: coloredspin 4s linear infinite;
+}
+
+@keyframes coloredspin {
+    0% {
+        transform: rotate(0deg);
+        border-top-color: #1abc9c;
+        border-bottom-color: #1abc9c;
+    }
+
+    25% {
+        border-top-color: #2ecc71;
+        border-bottom-color: #2ecc71;
+    }
+
+    50% {
+        transform: rotate(360deg);
+        border-top-color: #3498db;
+        border-bottom-color: #3498db;
+    }
+
+    75% {
+        border-top-color: #9b59b6;
+        border-bottom-color: #9b59b6;
+    }
+
+    100% {
+        transform: rotate(720deg);
+        border-top-color: #1abc9c;
+        border-bottom-color: #1abc9c;
+    }
+}
+```
+
+# requestAnimationFrame
+
+- 每个刷新帧执行一次,显示器60Hz,那么 `requestAnimationFrame` 每隔16.7ms执行一次。
+- 每一帧中的dom操作会被集中起来,在一次重绘或回流中完成
+- 隐藏的元素,该方法不会执行
+
+
+
+
+
+
