@@ -44,6 +44,21 @@ const fundamental =
   ]
 };
 
+const jsBundler = {
+  name: "JsBundler",
+  prefix: "/docs/jsBundler",
+  children: [
+    {
+      name: 'JS Modules',
+      route: '/docs/jsBundler/js_modules'
+    },
+    {
+      name: 'Module Bundling',
+      route: '/docs/jsBundler/module_bundling'
+    }
+  ]
+};
+
 const css = 
 {
   name: "Css",
@@ -109,6 +124,7 @@ const vue = {
 
 export const NoteRoutes = [
   fundamental,
+  jsBundler,
   css,
   react,
   vue

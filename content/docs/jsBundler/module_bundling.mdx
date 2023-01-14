@@ -1,0 +1,87 @@
+## 模块打包(Module Bundling)
+The process of stitching together a group pf modules and their dependencies into a single file.
+### 打包工具
+- Browserify - a tool that compiles CommonJS modules for the browser
+- RequireJS - a AMD dynamically loader
+- Webpack - will be focused on later
+
+## 为什么要用Webpack
+- 使用ES6, ES7等一些新的Javascript语法(通过babel支持). [ES6-cheatsheet](https://github.com/DrkSephy/es6-cheatsheet)
+- minify代码体积
+- 将less和scss转换成css
+- HMR热更新, 等等
+
+### Webpack 使用经验
+1. 配置`entry`模块输入的入口, 此为构建的第一步, Webpack递归解析出所有依赖项, 必填项.
+2. 配置`output`输出最终代码, 通常会有多个chunck输出
+3. 配置`resolve`告诉Webpack寻找模块策略, 例如`alias` `extensions`
+4. 配置`moudle`定义解析文件策略, 通常是配置`module.rules`里面的Loader
+5. 配置`plugins`各种功能扩展<br/>
+   - 模块热替换 `webpack.HotModuleReplacementPlugin()`
+   - 简化html文件创建`html-webpack-plugin` 等等
+6. 配置`optimization`设定各个chunck最佳化产出 
+
+### Webpack常用Loader
+- **babel-loader** <br/>
+  接入babel执行编译, 从项目根目录查找babel配置文件`.babelrc`或者`babel.config.js`
+```js
+module.exports = function () {
+  const presets = [
+    ["@babel/preset-react"],
+    ["@babel/preset-typescript"],
+    [
+      "@babel/preset-env",
+      //默认情况使用package.json中的browserlist指定运行在哪些浏览器中，生成相应的polyfill代码
+      {
+        targets: {
+          "ie": "11",
+          "chrome": "60"
+        }
+      },
+      {
+        /* useBuiltIns configures how @babel/preset-env handles polyfills
+        ** 默认值 false 即引入所有的polyfill
+        ** "useBuiltIns": "entry" 引入目标环境缺失或不支持的api
+        ** "useBuiltIns": "usage" 仅引入在代码中使用到的且在目标环境缺失的api
+        */
+        "useBuiltIns": "entry",
+        "corejs": "3.22"
+      }
+    ],
+  ];
+  const plugins = [];
+  return {
+    presets,
+    plugins,
+  };
+};
+```
+- **style-loader**和**css-loader** <br/>
+  下面loader顺序不能错(从后往前), `less-loader`转换less语法成css, 接着通过`css-loader`解析成字符串打包到js文件中, 
+  最后`style-loader`动态生成style标签插入html文件的head标签使css样式生效
+  ```js
+  module.exports = {
+    module: {
+      rules: [
+        {
+          test: /\.(css|less)$/,
+          use: ["style-loader", "css-loader", "less-loader"],
+        },
+        {
+          test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf)$/,
+          use: [
+            {
+              loader: "file-loader",
+              options: {
+                outputPath: "./dist",
+              },
+            },
+          ],
+        },
+      ],
+    },
+  }
+  ```
+- **file-loader** 和 **url-loader** <br/>
+  处理图片、字体和音视频资源, 替换成文件路径. `url-loader`可以将小体积的资源转换成base64编码替代访问地址, 以减少网络请求, 提升加载速度.
+

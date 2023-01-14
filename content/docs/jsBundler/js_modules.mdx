@@ -1,0 +1,105 @@
+## What are Modules?
+<Callout>
+  Good authors divide their books into chapters and sections; good programmers divide their 
+  programs into modules. 
+</Callout>
+## Benefits of using modules 
+Using modules in favor of sprawing, interdependent codebase.
+- **Maintainability** <br/>
+  Updating a single module will be much more easier when the module is decoupled from other pieces of codebase.
+- **Reusability** <br/>
+  A module that we can reuse over and over again without ctrl+v all around.
+
+## Incorporate modules into programs
+- the common approaches is use a single global variable to wrap code in a function, thereby creating a private 
+  namespace for itself using a closure scope.
+- if your programs relys on many other dependencies, you need to know the right order to load files in, that is troublesome.
+- loading other dependencies can still lead to namespace collisions. For examples, what if two of your modules have the same name?
+  Or waht if you have two versions of module, and you need both? The **CommonJS** and **AMD** are the answer!
+
+
+### CommonJS
+> Note that CommonJS takes a server-first approach and **synchronously** loads modules.
+> this looks great on the server but, unfortunately, makes it harder to use when writing JS for browser
+> Reading a module from the web takes a lot longer than reading from disk.
+> For as long as the script to load a module is running, it blocks the browser from running annything else until it finishes the loading.
+> It behaves the way because the JS thread stops until the code has been loaded.
+
+### AMD
+Shorhands of Asynchronous Module Definition
+
+```js
+define(['moduleA', 'moduleB'], function(moduleA, moduleB) {
+  moduleA.hello();
+})
+```
+
+```js title="moduleA.js"
+define("moduleA",[], function() {
+  return {
+    hello: function() {
+      console.log('hello')
+    }
+  }
+})
+```
+more resource 
+- [exploringjs.com](exploringjs.com/es6/ch_modules.html)
+- [AMD.md](https://github.com/amdjs/amdjs-api/blob/master/AMD.md)
+
+## ES6 modules
+<Callout>
+  Compare to CommonJS, `imports` in ES6 modules are **live**  
+</Callout>
+
+
+```js title="counter.js"
+var count = 1;
+function increment() {
+  count++;
+}
+function decrement() {
+  count--;
+}
+module.exports = {
+  count: count,
+  increment: increment,
+  decrement: decrement
+};
+``` 
+```js title="main.js" showLineNumbers {4}
+var counter = require('./counter.js');
+
+counter.increment();
+console.log(counter.count); // 1
+```
+How is it possible be one?🤔Because the `count` variable we imported is a disconnected copy and incrementing the count 
+will increment it in the module(function is't primitive value, it is just a reference), but won't increment the copied version.
+
+```js
+// ./counter.js
+export let count = 1;
+export function increment() {
+  count++;
+}
+export function decrement() {
+  count--;
+}
+// ./main.js
+import * as counter from './counter';
+
+console.log(counter.count); // 1
+counter.increment();
+console.log(counter.count); // 2
+```
+[The imports of an ES6 module are read-only views on the exported entities.](https://exploringjs.com/es6/ch_modules.html#_imports-are-read-only-views-on-exports)
+, which means there are following advantages<br/>
+
+- They enable cyclic dependencies(two modules depend on each other), even for unqualified imports.
+- Qualified and unqualified imports work the same way (they are both indirections).
+- You can split code into multiple modules and it will continue to work (as long as you don't try to change the values of imports).
+> The Most important things, ES6 Modules are designed with static analysis. When you import modules,
+> the import is resolved at compile time - that is, before the script starts executing.
+> This allows us to remove exports that are not used by other modules before we run the program.
+> Removing unused exports and  can lead to significant space saving, reducing stress on the browser
+> The approach to eliminate dead code, called "**tree shaking**"

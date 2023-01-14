@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 //import styles from '../styles/Home.module.css'
+import Link from 'next/link'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,7 +15,16 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex-1 flex bg-gradient-to-t from-[#accbee] to-[#e7f0fd] justify-center items-center" >
-        <span aria-label="roadwork sign">🚧 working in progress...</span>
+        <span aria-label="roadwork sign">🚧 HomePage is working in progress, how about some 
+          <Link href="/docs" className='text-cyan-700 font-bold relative'>
+            <span className='absolute -top-6 left-1/2 animate-bounce'>
+              <svg class="-translate-x-2/4 w-6 h-6 text-violet-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+              </svg>
+            </span>
+            &nbsp;notes
+          </Link>
+        ...</span>
       </div>
     </>
   )
