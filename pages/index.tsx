@@ -18,7 +18,7 @@ export default function Home() {
         <span aria-label="roadwork sign">🚧 HomePage is working in progress, how about some 
           <Link href="/docs" className='text-cyan-700 font-bold relative'>
             <span className='absolute -top-6 left-1/2 animate-bounce'>
-              <svg class="-translate-x-2/4 w-6 h-6 text-violet-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="-translate-x-2/4 w-6 h-6 text-violet-500" fill="none" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
                 <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
               </svg>
             </span>

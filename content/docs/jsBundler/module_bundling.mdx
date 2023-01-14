@@ -71,9 +71,10 @@ module.exports = function () {
           test: /\.(png|jpg|gif|svg|woff|woff2|eot|ttf)$/,
           use: [
             {
-              loader: "file-loader",
+              loader: "url-loader",
               options: {
-                outputPath: "./dist",
+                limit: 1024 * 30,
+                fallback: 'file-loader'
               },
             },
           ],
