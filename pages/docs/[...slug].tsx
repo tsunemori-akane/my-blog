@@ -3,20 +3,25 @@ import { DocLayout } from "#/components/docLayout"
 import collectFilePath from "#/lib/collectFilePath"
 import { getFileBySlug } from "#/lib/getFileBySlug"
 import { MDXLayoutRender } from "#/components/mdx-components/MDXcomponents"
-
+import { TOC } from "#/components/table-of-content"
 import path from 'node:path'
+import { ActiveAnchorProvider } from "#/components/contexts/activeAnchorProvider"
 
 const contentDir = 'content/docs'
 const root = process.cwd()
 
-export default function Page({slug, mdxSource}) {
+export default function Page({slug, mdxSource, toc}) {
   
   return (
     <main className="ml-6 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
-      <div className="mx-auto w-full min-w-0">
-        <MDXLayoutRender mdxSource={mdxSource} />
-        <hr className="my-4 border-slate-200 md:my-6" />
-      </div>
+      <ActiveAnchorProvider>
+        <div className="mx-auto w-full min-w-0">
+          <MDXLayoutRender mdxSource={mdxSource} />
+          <hr className="my-4 border-slate-200 md:my-6" />
+        </div>
+          <TOC headings={toc}/>
+      </ActiveAnchorProvider>
+      
     </main>
   )
 }
@@ -45,7 +50,7 @@ export async function getStaticProps({params}) {
   const post = await getFileBySlug(contentDir, slug)
   return {
     props: {
-      slug, mdxSource: post.mdxSource
+      slug, mdxSource: post.mdxSource, toc: post.toc
     }
   }
 }

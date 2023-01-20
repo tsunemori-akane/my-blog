@@ -5,6 +5,7 @@ import path from 'path'
 import remarkGfm from 'remark-gfm'
 import remarkFootnotes from 'remark-footnotes'
 import remarkMath from 'remark-math'
+import remarkTocHeadings from './remark-toc-headings'
 // Rehype packages
 import rehypeSlug from 'rehype-slug'
 import rehypeAutolinkHeadings from 'rehype-autolink-headings'
@@ -43,6 +44,7 @@ export async function getFileBySlug(type, slug) {
       options.remarkPlugins = [
         ...(options.remarkPlugins ?? []),
         remarkGfm,
+        [remarkTocHeadings, { exportRef: toc }],
         [remarkFootnotes, { inlineNotes: true }],
         remarkMath,
       ]
@@ -95,6 +97,7 @@ export async function getFileBySlug(type, slug) {
   })
 
   return {
-    mdxSource: code
+    mdxSource: code,
+    toc
   }
 }

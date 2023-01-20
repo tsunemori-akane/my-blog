@@ -1,0 +1,110 @@
+## What is Tapable?
+The backbone of the plugin system using hooks
+
+### Hooks
+Hooks allow other users to get notified of important events, and run the other user'single
+code when that important event happens. `document.addEventListener('click', function() {})`
+is a hook that browser exposes. Another example of hooks are Vue lifecycle methods,
+you've probably heard of `created` `mounted`  `unmounted` etc...
+
+## Write a plugin
+basic example plugin code
+```js
+class BasicPlugin {
+  //在构造函数中获取用户给插件传入的配置
+  constructor(options) {}
+  //webpack调用 BasicPlugin 实例的apply方法给插件实例传入 compiler 对象
+  //compiler instance: webpack.js.org/api/node/#compiler-instance
+  apply(compiler) {
+    //注册插件
+    //hook列表 webpack.js.org/api/compiler-hooks/#hooks
+    compiler.hooks.someHook.tap("plugin-name", (stats) => {
+      const { path, filename } = stats.compilation.options.output;
+    })
+  }
+}
+module.exports = BasicPlugin;
+```
+
+## SyncHook
+### 基本使用
+- 上面的`compiler.hooks`的钩子函数形如下面定义
+```js
+import { SyncHook, AsyncParallelHook } from "tapable";
+class car {
+  constructor() {
+    this.hooks = {
+      accelerate: new SyncHook(["newSpeed"]);
+      calculateRoutes: new AsyncParallelHook(["source", "target", "routesList"]);
+    }
+  }
+}
+```
+- 注册插件
+```js
+const myCar = new Car();
+//For sync hooks, tap is the only method to add a plugin. 
+//But in async hooks we can use tapPromise tapAsync and also tap
+myCar.hooks.accelerate.tap("myPlugin", (newSpeed) => {
+  if (newSpeed > 300) {
+    console.log("DamagePlugin", "it's too fast");
+  }
+});
+
+myCar.hooks.accelerate.call(400);
+```
+### 如何关联webpack
+- Class Car 类名改成webpack的核心Compiler
+- 接受options里传入的plugins
+```js title="Compiler.js" {12}
+const { SyncHook, AsyncParallelHook } = require('tapable')
+
+class Compiler {
+  constructor(options) {
+    this.hooks = {
+      accelerate: new SyncHook(["newSpeed"]);
+      calculateRoutes: new AsyncParallelHook(["source", "target", "routesList"]);
+    }
+    let plugins = options.plugins;
+    if(plugins && plugins.length > 0) {
+      //Compiler作为参数传给plugin
+      plugins.forEach(plugin => plugin.apply(this));
+    }
+  }
+  run() {
+    console.time("run");
+    this.accelerate(100);
+    this.calculateRoutes("Germany", "France", "Austria");
+  }
+  accelerate(params) {
+    this.hooks.accelerate.call(params);
+  }
+  calculateRoutes(...args) {
+    this.hooks.calculateRoutes.callAsync(...args, err => {
+      console.timeEnd('run')
+      if(err) console.error(err)
+    })
+  }
+}
+module.exports = Compiler;
+```
+- 给compiler钩子绑定方法
+```js title="MyPlugin.js"
+const Compiler = require('./compiler.js');
+
+class myPlugin{
+  constructor() {}
+  apply(compiler) {
+    //...同上 BasicPlugin
+  }
+}
+
+const my_Plugin = new myPlugin();
+const options = {
+  plugins:[my_Plugin]
+}
+let compiler = new Compiler(options)
+//执行run函数，触发钩子函数
+compiler.run()
+```
+

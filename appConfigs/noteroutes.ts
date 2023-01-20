@@ -45,7 +45,7 @@ const fundamental =
 };
 
 const jsBundler = {
-  name: "JsBundler",
+  name: "JsBundle",
   prefix: "/docs/jsBundler",
   children: [
     {
@@ -55,6 +55,10 @@ const jsBundler = {
     {
       name: 'Module Bundling',
       route: '/docs/jsBundler/module_bundling'
+    },
+    {
+      name: 'Tapable介绍',
+      route: '/docs/jsBundler/tapable'
     }
   ]
 };

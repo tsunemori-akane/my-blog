@@ -1,36 +1,66 @@
 import { getMDXComponent } from 'mdx-bundler/client'
 import { cn } from '#/lib/utils'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { Card } from './card'
 import { Callout } from './callout'
 import { Pre } from './pre'
 import Image from 'next/image'
 import { ReactElement, ComponentProps} from 'react'
+import { useSetActiveAnchor } from '../contexts/activeAnchorProvider'
+
+let observer: IntersectionObserver
+
+const IS_BROWSER = typeof window !== 'undefined'
+
 
 const createHeaderLink = (
   Tag: `h${1 | 2 | 3 | 4 | 5 | 6}`
 ) =>
   function HeaderLink({
     children,
-    id,
     className,
     ...props
   }: ComponentProps<'h2'>): ReactElement {
-  
+    const obRef = useRef(null);
+    let setActiveAnchor =  useSetActiveAnchor()
+    if(IS_BROWSER) {
+      observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if(e.isIntersecting) {
+              setActiveAnchor('#' + e.target.id)
+            }
+          })
+        },
+        {
+          rootMargin: '0px 0px -50%',
+          threshold: [0, 1]
+        }
+      )
+    }
+    useEffect(()=>{
+      const heading = obRef.current
+      if (!heading) return
+      observer.observe(heading)
+      return () => {
+        observer.disconnect();
+      }
+    }, [])
     return (
       <Tag
         className={cn(
           'font-semibold tracking-tight',
           {
-            h1: `mt-2 scroll-m-20 text-4xl font-bold ${className}`,
-            h2: `mt-10 scroll-m-20 border-b border-b-slate-200 pb-1 text-3xl first:mt-0 ${className}`,
-            h3: `mt-8 scroll-m-20 text-2xl ${className}`,
-            h4: `mt-8 scroll-m-20 text-xl ${className}`,
-            h5: `mt-8 scroll-m-20 text-lg ${className}`,
-            h6: `mt-8 scroll-m-20 text-base ${className}`
+            h1: `mt-2 scroll-m-20 text-4xl font-bold ${className ? className : ''}`,
+            h2: `mt-10 scroll-m-20 border-b border-b-slate-200 pb-1 text-3xl first:mt-0 ${className ? className : ''}`,
+            h3: `mt-8 scroll-m-20 text-2xl ${className ? className : ''}`,
+            h4: `mt-8 scroll-m-20 text-xl ${className ? className : ''}`,
+            h5: `mt-8 scroll-m-20 text-lg ${className ? className : ''}`,
+            h6: `mt-8 scroll-m-20 text-base ${className ? className : ''}`
           }[Tag]
         )}
         {...props}
+        ref={obRef}
       >
         {children}
         {/* <a
