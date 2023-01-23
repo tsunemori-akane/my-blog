@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState, useMemo} from "react";
 import { cn } from "#/lib/utils";
 import { useActiveAnchor } from "./contexts/activeAnchorProvider";
 
@@ -13,15 +13,18 @@ type TOCProps = {
 }
 
 export function TOC({headings} : TOCProps): ReactElement {
-  const hasHeadings = headings.length > 0
+  const items = useMemo<Heading[]>(
+    () => headings.filter(heading =>  heading.depth > 1), [headings]
+  )
+  const hasHeadings = items.length > 0
   const activeAnchor = useActiveAnchor()
   return (
     <>
       {hasHeadings && (
-        <div className="sticky top-16 h-[calc(100vh-3.5rem)] flex-1  overflow-y-auto [hyphens:auto]">
+        <div className="sticky top-16 max-h-[calc(100vh-3.5rem)] flex-1 overflow-y-auto [hyphens:auto]">
           <p className="mb-4 font-semibold tracking-tight">On This Page</p>
           <ul>
-            {headings.map(({ value, url, depth }) => (
+            {items.map(({ value, url, depth }) => (
               <li className="my-2 scroll-my-6 scroll-py-6" key={value}>
                 <a
                   href={url}

@@ -1,0 +1,13 @@
+## 相关链接
+[SPA versus MPA](https://web.dev/learn/pwa/architecture/) <br/>
+[SEO in SPA](https://www.freecodecamp.org/news/configure-metadata-in-single-page-applications/)
+## Google如何处理网页
+> source : [ahrefs.com](https://ahrefs.com/blog/react-seo)
+1. **Crawling** - [Googlebot](https://developers.google.com/search/docs/crawling-indexing/overview-google-crawlers)
+sends GET requests to a server for the URLs in the crawl queue and saves the response contents. Googlebot does this for HTML, JS, CSS, image files, and more.
+2. **Processing** - This includes adding URLs to the crawl queue found within `<a href>` links within the HTML. It also includes queuing resource URLs (CSS/JS) found within `<link>` tags or images within `<img src>` tags. 
+If Googlebot finds a noindex tag at this stage, the process stops, Googlebot won't render the content, and Caffeine (Google's indexer) won't index it.
+3. **Rendering** - Googlebot executes JavaScript code with a [headless Chromium browser](https://chromium.googlesource.com/chromium/src/+/lkgr/headless/README.md) to find additional content within the DOM, but not the HTML source. It does this for all HTML URLs.
+4. **Indexing** - Caffeine takes the information from Googlebot, normalizes it (fixes broken HTML), and then tries to make sense of it all, precomputing some ranking signals ready for serving within a search result.
+<Image src="/images/html/google-crawls-processes-indexes-pages.webp" height='300' width='500' alt="google-crawls-processes-indexes-pages.webp" />
+

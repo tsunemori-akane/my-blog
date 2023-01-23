@@ -98,6 +98,7 @@ export async function getFileBySlug(type, slug) {
 
   return {
     mdxSource: code,
+    frontmatter,
     toc
   }
 }

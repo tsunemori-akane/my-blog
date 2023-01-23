@@ -5,7 +5,7 @@ import styles from './blocklink.module.css'
 export function BlockLink({ href, icon, title}) {
   return (
     <Link
-      href='#'
+      href={href}
       className={cn(
         'group flex flex-col justify-start overflow-hidden rounded-lg border border-gray-200 bg-gray-100 text-current no-underline shadow shadow-gray-100 transition-all duration-200',
         'hover:border-gray-300 hover:shadow-lg hover:bg-slate-50 hover:shadow-md hover:shadow-gray-100',

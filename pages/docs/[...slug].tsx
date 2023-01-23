@@ -1,4 +1,3 @@
-import { NoteRoutes } from "#/appConfigs/noteroutes"
 import { DocLayout } from "#/components/docLayout"
 import collectFilePath from "#/lib/collectFilePath"
 import { getFileBySlug } from "#/lib/getFileBySlug"
@@ -6,23 +5,27 @@ import { MDXLayoutRender } from "#/components/mdx-components/MDXcomponents"
 import { TOC } from "#/components/table-of-content"
 import path from 'node:path'
 import { ActiveAnchorProvider } from "#/components/contexts/activeAnchorProvider"
+import { PageSEO } from "#/components/mdx-head"
 
 const contentDir = 'content/docs'
 const root = process.cwd()
 
-export default function Page({slug, mdxSource, toc}) {
-  
+export default function Page({slug, mdxSource, toc, frontmatter}) {
   return (
-    <main className="ml-6 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
-      <ActiveAnchorProvider>
-        <div className="mx-auto w-full min-w-0">
-          <MDXLayoutRender mdxSource={mdxSource} />
-          <hr className="my-4 border-slate-200 md:my-6" />
-        </div>
-          <TOC headings={toc}/>
-      </ActiveAnchorProvider>
-      
-    </main>
+    <>
+      <PageSEO frontmatter={frontmatter} />
+      <main className="ml-6 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
+        <ActiveAnchorProvider>
+          <div className="mx-auto w-full min-w-0">
+            <MDXLayoutRender mdxSource={mdxSource} />
+            <hr className="my-4 border-slate-200 md:my-6" />
+          </div>
+          <div className="hidden text-sm xl:block">
+            <TOC headings={toc}/>
+          </div>
+        </ActiveAnchorProvider>
+      </main>
+    </>
   )
 }
 Page.PageLayout = DocLayout
@@ -50,7 +53,10 @@ export async function getStaticProps({params}) {
   const post = await getFileBySlug(contentDir, slug)
   return {
     props: {
-      slug, mdxSource: post.mdxSource, toc: post.toc
+      slug, 
+      mdxSource: post.mdxSource, 
+      toc: post.toc,
+      frontmatter: post.frontmatter
     }
   }
 }

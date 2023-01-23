@@ -9,7 +9,7 @@ export const DocsMainPageRoute = [
       )
     },
     title: 'Fundamentals',
-    href: '#'
+    href: '/docs/fundamental/typeConversion'
   },
   {
     icon: () => {
@@ -23,7 +23,7 @@ export const DocsMainPageRoute = [
       )
     },
     title: 'JSBundle',
-    href: '#'
+    href: '/docs/jsBundler/js_modules'
   },
   {
     icon: () => {
@@ -34,7 +34,7 @@ export const DocsMainPageRoute = [
       )
     },
     title: "Css",
-    href: '#'
+    href: '/docs/css/how_css_work'
   },
   {
     icon: () => {
@@ -49,7 +49,7 @@ export const DocsMainPageRoute = [
       )
     },
     title: 'React',
-    href: '#'
+    href: '/docs/react/react-router-dom'
   },
   {
     icon: () => {
@@ -60,6 +60,6 @@ export const DocsMainPageRoute = [
       )
     },
     title: 'Vue',
-    href: '#'
+    href: '/docs/vue/customDirective'
   }
 ]

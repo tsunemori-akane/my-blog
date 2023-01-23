@@ -1,0 +1,49 @@
+---
+title: "Hooks使用指南"
+---
+
+## 为什么要有hooks
+贴上官网的解释[Complex components become hard to understand](https://reactjs.org/docs/hooks-intro.html#complex-components-become-hard-to-understand)
+
+## useEffect
+> In React class components, `componentDidMount` is a lifecycle method that is called once after the first render.
+> `useEffect`is a perfect replacement for a componentDidMount<br/>
+> The second argument of the useEffect is normally an array of a state(s) that changes, and useEffectwill be only called on these selected changes. But when it’s an empty array like this example, it will be called once on mounting.
+```js
+const FunctionalComponent = () => {
+ React.useEffect(() => {
+   console.log("Hello");
+ }, []);
+ return <h1>Hello, World</h1>;
+};
+```
+- On Unmounting (componentWillUnmount)
+<div className="grid grid-cols-2 gap-4">
+  <div>
+    ```js title="functional ver."
+    const FunctionalComponent = () => {
+      React.useEffect(() => {
+        return () => {
+          console.log("Bye");
+        };
+      }, []);
+      return <h1>Bye, World</h1>;
+    };
+    ```
+  </div>
+  <div>
+    ```js title="class ver."
+    class ClassComponent extends React.Component {
+      componentWillUnmount() {
+        console.log("Bye");
+      }
+      render() {
+        return <h1>Bye, World</h1>;
+      }
+    }
+    ```
+  </div>
+</div>
+
+
+

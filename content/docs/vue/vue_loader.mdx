@@ -1,2 +1,114 @@
+## Webpack Loader
+> loader就像是个翻译, 把源文件转化输出成新的结果, 而且源文件还可以链式的通过多个loader转换
+<Card>
+  ### 处理SCSS文件流程
+  1. SCSS源代码由sass-loader转换成CSS
+  2. 上一步输出文件由css-loader处理, 找出CSS中依赖的资源, 压缩CSS等
+  3. 上一步输出文件由style-loader处理, 转换成通过脚本加载的JS代码
+</Card>
+
 ## Vue Loader是什么?
 - 简单讲, 将`*.vue`文件变成可以在浏览器运行的js文件
+
+### Vue项目构建的几种方式
+1. 直接[CDN](https://en.wikipedia.org/wiki/Content_delivery_network)引入
+```html
+<body>
+    <div id="app"></div>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script type="module" src="./src/main.js"></script>
+</body>
+```
+
+2. Vite构建 `npm create vite@latest` 或者 `npm create vue@3`  即[create-vue](https://github.com/vuejs/create-vue)
+```json {12}
+{
+  //...
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vue": "^3.2.37"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.0",
+    "vite": "^3.1.0"
+  }
+}
+```
+> 依赖项 `@vitejs/plugin-vue` Provides Vue 3 Single File Components support. 即解析`.vue`扩展名后缀的文件，
+> Vue 2.x版本[vue-loader](https://vue-loader.vuejs.org/#what-is-vue-loader) 提供该支持(版本号 < 16.0.0)
+
+3. Vue CLI构建(现在貌似不推荐, 建议用第二种)
+
+### Vue Loader 手动设置
+- 同时安装`vue-loader`和`vue-template-compiler`
+- 在webpack中还要添加`VueLoaderPlugin`
+
+```js
+const { VueLoaderPlugin } = require('vue-loader')
+module.exports = {
+  module: {
+    rules: [
+      //...其它规则
+      {
+        test: /\.vue$/,
+        loader: 'vue-loader'
+      }
+    ]
+  },
+  plugins: [
+    //必须引入
+    new VueLoaderPlugin()
+  ]
+}
+```
+下面来自于`vue-loader`github, 很概括, 属于是作者高屋建瓴的理解, 开始看很难理解, 但很重要
+1. `vue-loader` parses the SFC source code into an *SFC Descriptor* using `@vue/compiler-sfc`.
+It then generates an import for each language block so the actual returned module code looks like this:
+```js
+// code returned from the main loader for 'source.vue'
+
+// import the <template> block
+import render from "source.vue?vue&type=template&id=27e4e96e&"
+// import the <script> block
+import script from 'source.vue?vue&type=script&lang=js&'
+export * from 'source.vue?vue&type=script&lang=js&'
+// import <style> blocks
+import 'source.vue?vue&type=style&index=0&id=27e4e96e&module=true&lang=css&'
+
+script.render = render
+export default script
+```
+上面看起来有点奇怪的request string对应[module.rules.resourceQuery](https://webpack.js.org/configuration/module/#ruleresourcequery)
+
+....看了好久看不懂, 先放一放
+
+### 调试vue-loader 15.10.0版本方法
+根目录下`.vscode`的`launch.json`配置, 参数参见[nodejs-debugging](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_launch-configuration-support-for-npm-and-other-tools)
+```json title="launch.json"
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch via npm",
+            "runtimeExecutable": "npm",
+            "runtimeArgs": ["run", "dev"],
+        }
+    ]
+}
+```
+
+```json title="package.json"
+{
+  //...
+  "scripts": {
+    "build": "webpack --config example/webpack.config.js --hide-modules",
+    "dev": "webpack-dev-server --config example/webpack.config.js --inline --hot",
+  }
+}
+```

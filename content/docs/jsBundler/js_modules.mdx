@@ -103,3 +103,71 @@ console.log(counter.count); // 2
 > This allows us to remove exports that are not used by other modules before we run the program.
 > Removing unused exports and  can lead to significant space saving, reducing stress on the browser
 > The approach to eliminate dead code, called "**tree shaking**"
+
+### Cyclic dependencies in CommonJS
+```js showLineNumbers 
+//index.js
+var a = require('./a')
+var b= require('./b')
+
+// a.js
+module.exports.a = '原始值-a模块内变量'
+console.log('a模块执行')
+var c = require('./c')
+
+// b.js
+module.exports.b = '原始值-b模块内变量'
+console.log('b模块执行')
+var c = require('./c')
+
+// c.js
+module.exports.c = '原始值-c模块内变量'
+console.log('c模块执行')
+```
+> 输出: a模块执行 c模块执行 b模块执行<br/>
+> 为什么仅在第8行require后输出 “c模块执行” , 13行require后不再输出了<br/>
+> 因为第一次执行c模块, CommonJS会将它缓存起来, 相当于拷贝一份, 放在一块新的内存中
+
+### Cyclic dependencies in ESModule
+
+ES module导出的是一个索引——内存地址, 没有办法这样处理. 
+在代码执行前, 首先要进行预处理, 这一步会根据import和export来构建模块地图`Module Map`, 它类似于一颗树, 树中的每一个“节点”就是一个模块记录, 这个记录上会标注导出变量的内存地址, 将导入的变量和导出的变量连接, 即把他们指向同一块内存地址, 不过此时这些内存都是空的`uninitialized`
+
+```js showLineNumbers
+// index.mjs
+import * as a from './a.mjs' //打断点debug -> step into -> 跳转到13行
+console.log('入口引用a:',a)
+
+// a.mjs
+import * as b from "./b.mjs"
+let a = "AAA"
+console.log("a引用b:", b)
+export { a }
+
+// b.mjs
+import * as a from "./a.mjs"
+let b = "BBB"     // 由第2行跳转过来
+console.log("b引用a:", a) //没打印出来
+export { b }
+```
+- 打印如下
+<Image src="/images/jsbundle/cyclic-dependencies-in-esmodule.webp" height='400' width='400' alt="webp" />
+
+- `.vscode`目录下launch.json配置
+```json
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Program",
+      "program": "${workspaceFolder}/test/cyclic_dependencies/index.mjs", //workspaceFolder是当前打开的最上层目录
+      "request": "launch",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "type": "node",
+      "runtimeExecutable": "/usr/local/bin/node"
+    },
+  ]
+}
+```

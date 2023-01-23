@@ -1,6 +1,6 @@
 'use client';
 
-import { NoteRoutes } from "../../appConfigs/noteroutes";
+import { NoteRoutes } from "#/appConfigs/note-routes"
 import { RecursiveMenu } from "./SideNavItems";
 
 export function SideNavigator() {
