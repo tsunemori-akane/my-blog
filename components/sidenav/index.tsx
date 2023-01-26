@@ -12,7 +12,7 @@ export function SideNavigator() {
     //const activeElement = document.querySelector('aside a._activePage')
     const activeElement = boundaryRef.current?.querySelector('aside a._activePage')
     
-    if (activeElement && (window.innerWidth > 767 || dir)) {
+    if (activeElement && (window.innerWidth > 767 || NoteRoutes)) {
       const scroll = () => {
         scrollIntoView(activeElement, {
           block: 'center',
