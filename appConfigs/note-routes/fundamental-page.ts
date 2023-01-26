@@ -19,6 +19,11 @@ export const fundamental =
       description: ""
     },
     {
+      name: "继承",
+      route: "/docs/fundamental/inheritance",
+      description: ""
+    },
+    {
       name: "正则",
       route: "/docs/fundamental/regularExpression",
       description: ""

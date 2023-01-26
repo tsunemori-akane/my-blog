@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect, memo} from 'react';
 import { cn } from '#/lib/utils';
 import { useRouter } from 'next/router';
 import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
 const TreeState: Record<string, boolean> = Object.create(null)
 
@@ -38,12 +39,13 @@ function Dropdownlistitem({route, name, disabled}) {
       }
       )}
     >
-      <a 
+      <Link 
         className={cn(
           'no-underline text-base w-full hover:underline',
           disabled && 'cursor-not-allowed opacity-40' 
         )} 
-        href={disabled? "#" : route}>{name}</a>
+        href={disabled? "#" : route}>{name}
+      </Link>
     </div>
   )
 }

@@ -20,7 +20,7 @@ export function MainNav({ items }) {
             <Link 
             key={item.name}
             className={cn(
-              router.pathname.startsWith(item.route) ? 'text-white font-bold' : 'text-slate-200'
+              router.pathname?.startsWith(item.route) ? 'text-white font-bold' : 'text-slate-200'
             )}
             href={item.route}>{item.name}</Link>
           )

@@ -18,6 +18,7 @@ const FunctionalComponent = () => {
 };
 ```
 - On Unmounting (componentWillUnmount)
+
 <div className="grid grid-cols-2 gap-4">
   <div>
     ```js title="functional ver."
@@ -45,5 +46,28 @@ const FunctionalComponent = () => {
   </div>
 </div>
 
+## useState
+### tips
+- 利用useState机制触发重新渲染
+```js
+const rerender = useState({})[1];
+const handleClick = (e) => {
+  rerender({})
+}
+```
+- 自定义`mounted`钩子
 
+```js
+import { useEffect, useState } from 'react'
+
+export function useMounted(): boolean {
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  return mounted
+}
+```
 

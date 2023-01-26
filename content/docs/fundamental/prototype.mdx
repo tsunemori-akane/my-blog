@@ -37,8 +37,13 @@ student.tSkill;	// JAVA
 
 Object.prototype
 
-## constructor
-
+## [constructor](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/constructor)
+```jsx
+const instance = new Number(3)
+Number.prototype.constructor === Number
+Number.prototype.__proto__ === Object.prototype
+Number.__proto__ === Function.prototype
+```
 ```jsx
 /*
  * Object是实例，实例没有constructor，会从原型上寻找，即Function.prototype.constructor

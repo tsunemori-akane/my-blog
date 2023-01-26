@@ -1,0 +1,159 @@
+---
+title: '继承inheritance'
+description: 'javascript之继承'
+---
+
+## 概念
+继承的目的使得子类具有父类的各种属性和方法, 实现继承的差异仅仅在于实现方法
+
+## ES6继承
+```js
+### 语法
+class Point { /* ... */ }
+
+class ColorPoint extends Point {
+  constructor(x, y, color) {
+    super(x, y); // 调用父类的constructor(x, y)
+    this.color = color;
+  }
+
+  toString() {
+    return this.color + ' ' + super.toString(); // 调用父类的toString()
+  }
+}
+```
+### 转译成es5
+关注几个标注出的函数
+```js showLineNumbers /_inherits/
+"use strict";
+//...
+var Point = function Point() {
+  _classCallCheck(this, Point); 
+};
+
+var ColorPoint = /*#__PURE__*/function (_Point) {
+  _inherits(ColorPoint, _Point);
+  var _super = _createSuper(ColorPoint);
+  function ColorPoint(x, y, color) {
+    var _this;
+    _classCallCheck(this, ColorPoint);
+    _this = _super.call(this, x, y); // 调用父类的constructor(x, y)
+    _this.color = color;
+    return _this;
+  }
+
+  _createClass(ColorPoint, [{
+    key: "toString",
+    value: function toString() {
+      return this.color + ' ' + _get(_getPrototypeOf(ColorPoint.prototype), "toString", this).call(this); // 调用父类的toString()
+    }
+  }]);
+
+  return ColorPoint;
+}(Point);
+```
+$\downarrow$ 下面5-8行就是原型式继承. 其中第七行修正了`constructor`指向, 等价于`subClass.prototype.constructor=subClass`.
+
+```js showLineNumbers {5-8}
+function _inherits(subClass, superClass) { 
+  if (typeof superClass !== "function" && superClass !== null) { 
+    throw new TypeError("Super expression must either be null or a function"); 
+  } 
+  subClass.prototype = Object.create(
+    superClass && superClass.prototype, 
+    { constructor: { value: subClass, writable: true, configurable: true } }
+  ); 
+  //用于继承父类静态属性和方法
+  if (superClass) _setPrototypeOf(subClass, superClass); 
+}
+
+function _setPrototypeOf(o, p) { 
+  _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; 
+  return _setPrototypeOf(o, p); 
+}
+```
+$\downarrow$ `Object.create` 兼容方案
+```js
+if(!Object.create) {
+  Object.create = function(obj) {
+    function fn() {}
+    fn.prototype = obj
+    return new fn()
+  }
+}
+```
+### [super关键字](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/super)
+1. In the constructor body of a derived class, the `super` appear as a function call, 
+which must be called before the `this` kewword is used and before constructor returns. 
+The `super()` call the parent class's constructor and binds the parent class's public fields.
+2. $\downarrow$ call `super` on static methods
+```js
+class A {
+  constructor() {
+    this.x = 1;
+  }
+  print() {
+    console.log(this.x);
+  }
+  checkThis() {
+    console.log('no static', this)
+  }
+  static checkThis() {
+    console.log("static", this) //这里断点, 图见下方
+    console.log('static', this === A)
+  }
+}
+
+class B extends A {
+  constructor() {
+    super();
+    this.x = 2;
+  }
+  checkThis() {
+    super.checkThis()
+  }
+}
+
+let a = new A();
+let b = new B();
+a.checkThis(); //no static A { x: 1 }
+b.checkThis(); //no static B { x: 2 }
+A.checkThis(); //static [class A] static true
+``` 
+
+<Image src="/images/fundamental/this_in_static_method.webp" width='500' height='600' alt="" />
+
+## 原型链继承
+```js
+function parent() {
+  this.parent = '父类';
+}
+parent.prototype.parent_p =  '父类原型对象的属性或者方法';
+// 子类
+function child() {
+  this.child = '子类';
+}
+// 核心步骤：重写子类的原型对象
+child.prototype = new parent();
+child.prototype.child_p = '子类原型对象的属性或者方法' // 子类的属性/方法声明在后面,避免被覆盖
+// 实例化子类
+const ins = new child();
+console.log('子类的实例：', ins);
+```
+### new做了什么
+1. 创建一个全新的对象。
+2. 这个新对象的原型 `__proto__`指向函数的prototype对象。
+3. 执行函数, 函数的this会绑定在新创建的对象上。
+4. 如果函数没有返回其他对象(包括数组、函数、日期对象等)，那么会自动返回这个新对象。$\downarrow$
+5. 返回的那个对象为构造函数的实例。
+- 对于第4点解释
+```js
+//当构造函数返回的是引用值时，如：函数、对象、数组，就返回引用值。若返回的是原始值，没有任何作用
+function Car(){
+  this.color = 'red';
+  this.brand = 'Benz';
+  return {};
+}
+var car = new Car();
+console.log(car.color);//undefined
+```

@@ -51,7 +51,7 @@ export async function getFileBySlug(type, slug) {
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
         rehypeSlug,
-        rehypeKatex,
+        [rehypeKatex, {output: "html"}],
         [rehypeAutolinkHeadings, {
           properties: {
             className: ["subheading-anchor"],
@@ -59,7 +59,7 @@ export async function getFileBySlug(type, slug) {
           }
         }],
         
-        [rehypeCitation, { path: path.join(root, 'data') }],
+        [rehypeCitation, { path: path.join(root, 'content') }],
         //[rehypePrismPlus, { ignoreMissing: true }],
         [
           rehypePrettyCode,

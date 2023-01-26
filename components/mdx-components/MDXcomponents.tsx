@@ -162,7 +162,7 @@ export const MDXcomponents = {
   code: ({ className, ...props }) => (
     <code 
       className={cn(
-        'border-black border-opacity-10 bg-opacity-10 bg-black break-words rounded-md border py-0.5 px-[.25em] text-[.9em]',
+        'border-black border-opacity-10 bg-opacity-10 bg-slate-900 break-words rounded-md border py-0.5 px-[.25em] text-[.9em]',
         className
       )}
       {...props}
