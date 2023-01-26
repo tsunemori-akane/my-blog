@@ -37,6 +37,7 @@
     "remark-footnotes": "^4.0.1",
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
+    "scroll-into-view-if-needed": "^3.0.4",
     "shiki": "^0.12.1",
     "slash": "^5.0.0",
     "tailwind-merge": "^1.8.1",

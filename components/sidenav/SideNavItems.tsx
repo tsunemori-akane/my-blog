@@ -42,7 +42,8 @@ function Dropdownlistitem({route, name, disabled}) {
       <Link 
         className={cn(
           'no-underline text-base w-full hover:underline',
-          disabled && 'cursor-not-allowed opacity-40' 
+          disabled && 'cursor-not-allowed opacity-40' ,
+          pathname === route ? '_activePage' : '_inactivePage'
         )} 
         href={disabled? "#" : route}>{name}
       </Link>
@@ -129,7 +130,7 @@ function FolderImpl ({item}) {
   // console.log("focusedRouteInside:", focusedRouteInside)
   const open =
     TreeState[item.prefix] !== undefined
-      ? TreeState[item.prefix] 
+      ? TreeState[item.prefix] || focusedRouteInside
       : focusedRouteInside
   const rerender = useState({})[1]
 
