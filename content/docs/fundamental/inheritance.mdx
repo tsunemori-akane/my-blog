@@ -87,13 +87,10 @@ if(!Object.create) {
 which must be called before the `this` kewword is used and before constructor returns. 
 The `super()` call the parent class's constructor and binds the parent class's public fields.
 2. $\downarrow$ call `super` on static methods
-```js
+```js /super/ /这里断点, 图见下方/
 class A {
   constructor() {
     this.x = 1;
-  }
-  print() {
-    console.log(this.x);
   }
   checkThis() {
     console.log('no static', this)
