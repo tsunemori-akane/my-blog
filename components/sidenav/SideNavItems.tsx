@@ -130,7 +130,7 @@ function FolderImpl ({item}) {
   // console.log("focusedRouteInside:", focusedRouteInside)
   const open =
     TreeState[item.prefix] !== undefined
-      ? TreeState[item.prefix] || focusedRouteInside
+      ? TreeState[item.prefix] 
       : focusedRouteInside
   const rerender = useState({})[1]
 

@@ -3,7 +3,7 @@ title: "javascript类型转换"
 description: "简单讨论发生隐式转换的内在逻辑"
 ---
 
-# typeof
+## typeof
 
 ```jsx
 typeof(typeof(a));   //'string'
@@ -12,10 +12,20 @@ typeof(undefined);   //undefined
 typeof(new Date());  //'object'
 typeof(NaN);         //'number'
 typeof(+ '123');     //'number'
-
 ```
+typeof(null) = 'object' 的[原因](https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Operators/typeof#typeof_null)
 
-# String
+### typeof和instanceof
+对于下面例子中的非原始值(non primitive)而言, 由于`d.__proto__ == Date.prototype`, 即构造函数Date的prototype属性在实例对象d的原型链上, 所以`true === d instanceof Date`
+```js {6}
+var d = new Date();
+true === d instanceof Date;
+var n = new Number(3);
+true === n instanceof Number;
+var m = 3;
+false === m instanceof Number; //number primitive is not a Number
+```
+## String
 
 ```jsx
 String(function() {});
@@ -23,7 +33,7 @@ String(null);
 String(undefined);
 ```
 
-# Number
+## Number
 
 ```jsx
 Number(null);      //0
@@ -78,7 +88,7 @@ var obj = {
 console.log(String(obj))
 ```
 
-# 比较运算符 < > ==
+## 比较运算符 < > ==
 
 ```jsx
 NaN == NaN;          //false
