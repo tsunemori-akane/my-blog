@@ -1,0 +1,14 @@
+
+
+.carousel_container {
+  width: 40rem;
+  height: 16rem;
+  /* perspective: 1000px; */
+  transform-style: preserve-3d;
+}
+
+.card_container {
+  transform: rotateX(calc(var(--offset) * -10deg)) scaleX(calc(1 + var(--abs-offset) * -0.4)) translateZ(calc(var(--abs-offset) * -30rem)) translateY(calc(var(--direction) * -4rem));
+  transition: all .3s ease-out;
+  filter: blur(calc(var(--abs-offset) * 1rem))
+}

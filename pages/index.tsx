@@ -2,8 +2,7 @@ import Head from 'next/head'
 import { Inter } from '@next/font/google'
 //import styles from '../styles/Home.module.css'
 import Link from 'next/link'
-
-const inter = Inter({ subsets: ['latin'] })
+import { Carousel } from '#/components/ui/carousel'
 
 export default function Home() {
   return (
@@ -15,16 +14,21 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex-1 flex bg-gradient-to-t from-[#accbee] to-[#e7f0fd] justify-center items-center" >
-        <span aria-label="roadwork sign" className='text-xl'>🚧 HomePage is working in progress, how about some 
-          <Link href="/docs" className='text-cyan-700 font-bold relative'>
-            <span className='absolute -top-6 left-1/2 animate-bounce'>
-              <svg className="-translate-x-2/4 w-6 h-6 text-violet-500" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" viewBox="0 0 24 24" stroke="currentColor">
-                <path d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-              </svg>
-            </span>
-            &nbsp;notes
-          </Link>
-        ...</span>
+        <Carousel>
+          <div className='carousel-card'>
+            <div class="ribbon ribbon-top-left"><span>about me</span></div>
+          </div>
+          <div className='carousel-card'>
+            <div class="ribbon ribbon-top-left"><span>contact</span></div>
+          </div>
+          <div className='carousel-card'>
+            <div class="ribbon ribbon-top-left"><span>favorvites</span></div>
+          </div>
+          <div className='carousel-card'>
+            <div class="ribbon ribbon-top-left"><span>life</span></div>
+          </div>
+        </Carousel>
+
       </div>
     </>
   )

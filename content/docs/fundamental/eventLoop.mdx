@@ -1,0 +1,14 @@
+---
+title: "事件循环-Event Loop"
+description: "事件循环-Event Loop"
+---
+
+## In summary
+- Tasks execute in order, and the browser may render between them
+- Microtasks execute in order, and are executed:
+    - after every callback, as long as no other javascript is mid-execution
+    - at the end of each task
+
+$\downarrow$ This graphic copy from [Javascript main thread Dissected](https://frarizzi.science/journal/web-engineering/javascript-main-thread-dissected)
+
+<Image src="/images/fundamental/event-loop.webp" height='600' width='700' alt="event-loop.webp" />

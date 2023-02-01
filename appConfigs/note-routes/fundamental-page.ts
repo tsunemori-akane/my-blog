@@ -29,6 +29,10 @@ export const fundamental =
       description: ""
     },
     {
+      name: "事件循环",
+      route: "/docs/fundamental/eventLoop",
+    },
+    {
       name: "垫片polyfill",
       prefix: "/docs/fundamental/polyfill",
       children: [
