@@ -92,7 +92,7 @@ export const Carousel = forwardRef<HTMLElement, CarouselProps>(
                 "--offset": (currentSlide - i) / 3,
                 "--abs-offset": Math.abs(currentSlide - i) / 3,
                 "--direction": Math.sign(currentSlide - i),
-              }}
+              } as React.CSSProperties}
             >
               {e}
             </div>
