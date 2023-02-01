@@ -16,17 +16,17 @@ export default function Home() {
       <div className="flex-1 flex bg-gradient-to-t from-[#accbee] to-[#e7f0fd] justify-center items-center" >
         <Carousel>
           <div className='carousel-card'>
-            <div class="ribbon ribbon-top-left"><span>about me</span></div>
+            <div className="ribbon ribbon-top-left"><span>about me</span></div>
           </div>
           <div className='carousel-card'>
-            <div class="ribbon ribbon-top-left"><span>contact</span></div>
+            <div className="ribbon ribbon-top-left"><span>contact</span></div>
           </div>
           <div className='carousel-card'>
-            <div class="ribbon ribbon-top-left"><span>favorvites</span></div>
+            <div className="ribbon ribbon-top-left"><span>favorvites</span></div>
           </div>
           <div className='carousel-card'>
-            <div class="ribbon ribbon-top-left"><span>life</span></div>
-          </div>
+            <div className="ribbon ribbon-top-left"><span>life</span></div>
+          </div> 
         </Carousel>
 
       </div>

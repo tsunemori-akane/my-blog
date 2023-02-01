@@ -35,10 +35,14 @@ const Dots = ({count, ...props}) => {
   )
 }
 
-export const Carousel = forwardRef(({children, ...props}, ref) => {
+export const Carousel = forwardRef(
+  (
+    {...props}, 
+    ref
+  ) => {
 
-  let count = React.Children.count(children)
-  let child = React.Children.toArray(children);
+  let count = React.Children.count(props.children)
+  let child = React.Children.toArray(props.children);
   //children may contain false or null, so we should filter them 
   //children may also contain string filled with spaces
   child = child.filter(child => {
