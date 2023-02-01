@@ -16,17 +16,25 @@ export default function Home() {
       <div className="flex-1 flex bg-gradient-to-t from-[#accbee] to-[#e7f0fd] justify-center items-center" >
         <Carousel>
           <div className='carousel-card'>
-            <div className="ribbon ribbon-top-left"><span>about me</span></div>
+            <div className="ribbon ribbon-top-left"><span>welcome</span></div>
+            <div className='text-lg'>
+              <div>欢迎来到我的博客，<Link href="/docs" className='underline text-cyan-700'>这里</Link>能查看我的技术笔记</div>
+              <div>何を探しですか？僕のノト、<Link href="/docs" className='underline text-cyan-700'>こちらへ</Link></div>
+              <div>Welcome to my blog, you can see my notes <Link href="/docs" className='underline text-cyan-700'>here</Link></div>
+            </div>
           </div>
           <div className='carousel-card'>
-            <div className="ribbon ribbon-top-left"><span>contact</span></div>
+            <div className="ribbon ribbon-top-left"><span>motto</span></div>
+            <div className='text-2xl'>Life, Life and Life</div>
           </div>
           <div className='carousel-card'>
             <div className="ribbon ribbon-top-left"><span>favorvites</span></div>
-          </div>
-          <div className='carousel-card'>
-            <div className="ribbon ribbon-top-left"><span>life</span></div>
+            <div className='text-2xl'>Freedom, Family and Fun</div>
           </div> 
+          <div className='carousel-card'>
+            <div className="ribbon ribbon-top-left"><span>contact</span></div>
+            <div className='text-2xl'>Webchat: de_cyl</div>
+          </div>
         </Carousel>
 
       </div>
