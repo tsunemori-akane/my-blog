@@ -2,6 +2,12 @@ import React, { forwardRef, useState } from "react"
 import { cn } from "#/lib/utils";
 import styles from './carousel.module.css'
 
+interface CarouselProps {
+  children?: React.ReactNode
+} 
+interface CarouselRef {
+
+}
 const MAX_VISIBILITY = 3;
 
 const Dots = ({count, ...props}) => {
@@ -35,7 +41,7 @@ const Dots = ({count, ...props}) => {
   )
 }
 
-export const Carousel = forwardRef(
+export const Carousel = forwardRef<CarouselProps, CarouselRef>(
   (
     {...props}, 
     ref
