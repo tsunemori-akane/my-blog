@@ -1,0 +1,43 @@
+---
+title: '实现pipe函数和compose函数'
+description: '实现pipe函数和compose函数'
+---
+
+## pipe函数
+接受一组函数Array[fn1, fn2, fn3, ...]作为参数, 前一个函数返回值作为后一个函数的参数
+```js
+const pipe = (...fns) => (x) => fns.reduce((v, f) => f(v), x)
+```
+### 函数柯里化
+```js
+const multiply = (a) => (b) => (c) => a*b*c;
+multiply(2)(3)(4);
+const multiply5 = multiply(5);
+```
+那么`pipe`函数使用方式 pipe(fn1, fn2, ...)(x)
+
+### ES5写法
+```js
+"use strict";
+var pipe = function pipe() {
+  for (var _len = arguments.length, fns = new Array(_len), _key = 0; _key < _len; _key++) {
+    fns[_key] = arguments[_key];
+  }
+  return function (x) {
+    return fns.reduce(function (v, f) {
+      return f(v);
+    }, x);
+  };
+};
+```
+
+## compose函数
+[ramda](https://ramdajs.com/docs/#compose)中`compose`函数例子如下
+```js
+const classyGreeting = (firstName, lastName) => "The name's " + lastName + ", " + firstName + " " + lastName
+const yellGreeting = R.compose(R.toUpper, classyGreeting);
+yellGreeting('James', 'Bond'); //=> "THE NAME'S BOND, JAMES BOND"
+
+R.compose(Math.abs, R.add(1), R.multiply(2))(-4) //=> 7
+```
+可以看出`compose`函数与`pipe`执行顺序相反, `reverse`参数或者使用`refuceRight`从右向左执行

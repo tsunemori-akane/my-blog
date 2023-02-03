@@ -21,7 +21,7 @@ const Dots = ({count, ...props}) => {
       <li key={i} className="list-none mb-6 last:mb-0">
         <button 
           className={cn("hover:scale-[1.8] w-3 h-3 text-[0px] outline-0 rounded-full border-2 border-slate-400 bg-slate-200 transition-all duration-300", 
-            props.currentSlide==i && "scale-[1.8]"
+            props.currentSlide==i && "scale-[1.8] bg-white"
           )}
           onClick={()=> props.changeSlide(dotOptions)}
         >

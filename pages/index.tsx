@@ -20,7 +20,7 @@ export default function Home() {
             <div className='text-lg'>
               <div>欢迎来到我的博客，<Link href="/docs" className='underline text-cyan-700'>这里</Link>能查看我的技术笔记</div>
               <div>何を探しですか？僕のノト、<Link href="/docs" className='underline text-cyan-700'>こちらへ</Link></div>
-              <div>Welcome to my blog, you can see my notes <Link href="/docs" className='underline text-cyan-700'>here</Link></div>
+              <div>Welcome to my site, you can see my notes <Link href="/docs" className='underline text-cyan-700'>here</Link></div>
             </div>
           </div>
           <div className='carousel-card'>

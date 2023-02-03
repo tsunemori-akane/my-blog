@@ -13,6 +13,10 @@ export const jsBundler = {
     {
       name: 'Tapable介绍',
       route: '/docs/jsBundler/tapable'
+    },
+    {
+      name: 'Monorepo',
+      route: '/docs/jsBundler/monorepo'
     }
   ]
 };

@@ -48,6 +48,10 @@ export const fundamental =
           name: "防抖节流",
           route: "/docs/fundamental/polyfill/debounceandthrottle",
         },
+        {
+          name: "pipe&compose",
+          route: "/docs/fundamental/polyfill/pipe_compose",
+        },
       ]
     },
   ]
