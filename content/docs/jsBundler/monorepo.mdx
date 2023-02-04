@@ -16,11 +16,61 @@ A good monorepo is the opposite of monolithic, and monorepos are not a silver bu
 
 ## 使用pnpm管理monorepo
 pnpm的node_module结构跟npm构建的不太一样, 具体见这里[Flat node_modules is not the only way](https://pnpm.io/blog/2020/05/27/flat-node-modules-is-not-the-only-way)
+
+### 优点
+- install using global store
+- Dependencies are symlinked to reduce complexity
+- Hard linking from global store(prevent many copies of same package)
+<Card>
+  #### 概念解释
+  1. symlink and hardlink <br/>
+  linux系统中有一个重要概念`inode`(the abbreviation for "index node").
+  它是文件和目录的唯一标志符, inode存储了元数据(metadata). 元数据包含(fileType、fileSize、ownerId、read write and execute permission 、last change time···)
+  并且有一个唯一的inode number, 使用命令`ls -i <file name | directory name>`可查看. <br/> <br/>
+  一般情况, 一个文件名“唯一”对应一个 inode. 但是linux允许多个文件名都指向同一个inode. 
+  这表示我们可以使用不同的文件名访问同样的内容, 对文件内容进行修改将“反映”到所有文件, 删除一个文件不影响其它拥有相同`inode number`但文件名不同文件的访问, 这种机制就被称为**硬链接**hardlink.<br/>
+  上文说到`pnpm insall`后的`node_modules`目录不太一样, 实际上项目的依赖都经由**软连接**指向同级别目录中的`.pnpm`目录里.
+
+```yaml
+>$ tree -L 2
+├── node_modules
+│   ├── .pnpm
+│   ├── @changesets
+│   ├── @eslint
+│   ├── @types
+│   ├── @typescript-eslint
+│   ├── eslint -> .pnpm/eslint@8.23.1/node_modules/eslint
+│   ├── prop-types -> .pnpm/prop-types@15.8.1/node_modules/prop-types
+│   ├── tsup -> .pnpm/tsup@6.2.3_typescript@4.7.4/node_modules/tsup
+│   └── typescript -> .pnpm/typescript@4.7.4/node_modules/typescript
+```
+  2. global store <br/>
+  指的是Mac/linux中`/Users/<你的用户名>/.pnpm-store`路径下的公共文件. pnpm安装项目依赖的时候, 如果依赖包存在在该路径下, 直接使用
+  <Image src="/images/jsbundle/pnpm-link.webp" height='400' width='700' alt="pnpm-link.webp" />
+</Card> 
+
+```yaml
+├── examples
+│   ├── blog
+│   ├── docs
+│   └── swr-site
+├── node_modules
+├── package.json
+├── packages
+│   ├── nextra
+│   ├── nextra-theme-blog
+│   └── nextra-theme-docs
+├── pnpm-lock.yaml
+├── pnpm-workspace.yaml
+├── prettier.config.js
+├── renovate.json
+└── turbo.json
+```
 ## 扩展文章
 [Everything you need to know about monorepo](https://monorepo.tools/) <br/>
 [Monorepo生态](https://github.com/korfuri/awesome-monorepo) <br/>
 [介绍 Google 如何将数十亿代码通过 monorepo 方式组织的](https://dl.acm.org/doi/pdf/10.1145/2854146)
-
+[juejin-pnpm](https://juejin.cn/post/7053340250210795557)
 
 
 
