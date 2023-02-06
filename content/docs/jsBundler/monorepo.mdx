@@ -15,7 +15,7 @@ A good monorepo is the opposite of monolithic, and monorepos are not a silver bu
 </Callout>
 
 ## 使用pnpm管理monorepo
-pnpm的node_module结构跟npm构建的不太一样, 具体见这里[Flat node_modules is not the only way](https://pnpm.io/blog/2020/05/27/flat-node-modules-is-not-the-only-way)
+pnpm的node_module结构跟npm构建的不太一样, 具体见这里[Flat node_modules is not the only way](https://pnpm.io/blog/2020/05/27/flat-node-modules-is-not-the-only-way), 以及[explain the circular symlink](https://github.com/pnpm/pnpm/discussions/4207)
 
 ### 优点
 - install using global store
@@ -24,12 +24,32 @@ pnpm的node_module结构跟npm构建的不太一样, 具体见这里[Flat node_m
 <Card>
   #### 概念解释
   1. symlink and hardlink <br/>
-  linux系统中有一个重要概念`inode`(the abbreviation for "index node").
+  - linux系统中有一个重要概念`inode`(the abbreviation for "index node").
   它是文件和目录的唯一标志符, inode存储了元数据(metadata). 元数据包含(fileType、fileSize、ownerId、read write and execute permission 、last change time···)
-  并且有一个唯一的inode number, 使用命令`ls -i <file name | directory name>`可查看. <br/> <br/>
-  一般情况, 一个文件名“唯一”对应一个 inode. 但是linux允许多个文件名都指向同一个inode. 
-  这表示我们可以使用不同的文件名访问同样的内容, 对文件内容进行修改将“反映”到所有文件, 删除一个文件不影响其它拥有相同`inode number`但文件名不同文件的访问, 这种机制就被称为**硬链接**hardlink.<br/>
-  上文说到`pnpm insall`后的`node_modules`目录不太一样, 实际上项目的依赖都经由**软连接**指向同级别目录中的`.pnpm`目录里.
+  并且有一个唯一的inode number, 使用命令`ls -i (file name|directory name)`可查看. <br/> <br/>
+  一般情况, 一个文件名“唯一”对应一个 inode. 但是linux允许多个文件名都**硬连接**到同一个inode. 
+  这表示我们可以使用不同的文件名访问同样的内容, 对文件内容进行修改将“反映”到所有文件, 删除目标文件不影响其它拥有相同`inode number`但文件名不同的*hardlink*访问,只有最后一个*hardlink*被删除, 这个`inode number`才会被释放, 这种机制就被称为**硬连接hardlink**.<br/> <br/>
+  - 两张图总结: 图1 `/usr/sbin/mail` 和 `/var/qmail/bin/sendmail`都是*hardlink*, 图2 `/usr/sbin/mail`是一个*symlink*指向一个*hardlink*`/var/qmail/bin/sendmail`
+  <div className="grid grid-cols-2 gap-4">
+  <div>
+    <div>&nbsp;&nbsp;&nbsp;Figure 1-hardlink</div>
+    <Image src="/images/jsbundle/hardlink.webp" height={200} width={300} alt="hardlink" />
+  </div>
+  <div>
+    <div>&nbsp;&nbsp;&nbsp;Figure 2-symlink</div>
+    <Image src="/images/jsbundle/symlink.webp" height={200} width={300} alt="symlinklink" />
+  </div>
+</div>
+| Hard Links | Soft Links |
+| - | - |
+|It is a copy of the original file that serves as a pointer to the same file, allowing it to be accessed even if the original file is deleted or relocated.|It is a short pointer file that links a filename to a pathname. It's nothing more than a shortcut to the original file, much like the Windows OS's shortcut option.|
+|It has a similar inode number to the target file. | It has a different inode number.|
+|It is not allowed the relative path.|It allows both relative and absolute paths.|
+|It cannot be established outside the file system. | It may be established in the file system.|
+|It has an additional name for the original file that references to the target file through inode.| It is different from the original file and is an alternative for it, but it does not use inode.|
+|It may only link to a file.|	It may link both to a directory or a file.|
+|It remains valid even if the target file is deleted.| 	It becomes invalid when the originating file is deleted.|
+  - 上文说到`pnpm insall`后的`node_modules`目录不太一样, 实际上项目的依赖都经由**软连接**指向同级别目录中的`.pnpm`目录里. 
 
 ```yaml
 >$ tree -L 2
@@ -46,9 +66,19 @@ pnpm的node_module结构跟npm构建的不太一样, 具体见这里[Flat node_m
 ```
   2. global store <br/>
   指的是Mac/linux中`/Users/<你的用户名>/.pnpm-store`路径下的公共文件. pnpm安装项目依赖的时候, 如果依赖包存在在该路径下, 直接使用
-  <Image src="/images/jsbundle/pnpm-link.webp" height='400' width='700' alt="pnpm-link.webp" />
+  <Image src="/images/jsbundle/pnpm-link.webp" height={400} width={700} alt="pnpm-link.webp"/>
+  详细分析文章, 配合上图[Symlink node_modules structure](https://pnpm.io/symlinked-node-modules-structure)
 </Card> 
 
+### workspace
+[workspace](https://pnpm.io/workspaces)必须有一个`pnpm-workspace.yaml`在其根目录. 以[nextra](https://github.com/shuding/nextra)的提交版本`bc319706`为例. 
+
+```yaml title="pnpm-workspace.yaml"
+packages:
+  - 'packages/*'
+  - 'examples/*'
+```
+工程目录结构
 ```yaml
 ├── examples
 │   ├── blog
@@ -66,11 +96,59 @@ pnpm的node_module结构跟npm构建的不太一样, 具体见这里[Flat node_m
 ├── renovate.json
 └── turbo.json
 ```
+执行`pnpm run dev --recursive`有如下输出
+```md
+Scope: all 7 workspace projects
+. dev$ turbo run dev
+└─ Running...
+│ • Packages in scope: blog, docs, nextra, nextra-theme-blog, nextra-theme-docs, swr-site
+└─ Running...
+```
+正好对应`examples`和`packages`目录下的子工程, 接着看`examples/docs`目录下的`package.json`.
+```json showLinesNumbers {6-7}
+{
+  "name": "docs",
+  "dependencies": {
+    "react": "*",
+    "react-dom": "*",
+    "next": ">=13",
+    "nextra": "workspace:*",
+    "nextra-theme-docs": "workspace:*"
+  },
+  "dependenciesMeta": {
+    "nextra": {
+      "injected": true
+    },
+    "nextra-theme-docs": {
+      "injected": true
+    }
+  }
+}
+```
+[dependenciesMeta.*.injected](https://pnpm.io/package_json#dependenciesmetainjected)的作用官网讲的很清楚了。 
+
+[//]: # (在文中的例子`nextra-theme-docs`和`docs`都有依赖项`react` `react-dom`等等, 而且`react`在`nextra-theme-docs`中声明在`peerDependencies`里面, 
+那么`nextra`和`nextra-theme-docs`都会作为**硬连接hardlink**到`docs`依赖中, 用`tree`命令可以看到硬连接地址在根目录`.pnpm`下.)
+
+
+```json
+{
+  "name": "nextra-theme-docs",
+  "version": "2.0.2",
+  "peerDependencies": {
+    "next": ">=9.5.3",
+    "react": ">=16.13.1",
+    "react-dom": ">=16.13.1"
+  },
+}
+```
+
 ## 扩展文章
 [Everything you need to know about monorepo](https://monorepo.tools/) <br/>
 [Monorepo生态](https://github.com/korfuri/awesome-monorepo) <br/>
-[介绍 Google 如何将数十亿代码通过 monorepo 方式组织的](https://dl.acm.org/doi/pdf/10.1145/2854146)
-[juejin-pnpm](https://juejin.cn/post/7053340250210795557)
+[介绍 Google 如何将数十亿代码通过 monorepo 方式组织的](https://dl.acm.org/doi/pdf/10.1145/2854146) <br/>
+[掘金-pnpm](https://juejin.cn/post/7053340250210795557) <br/>
+[monorepo下模块包设计实践](https://zhuanlan.zhihu.com/p/456483953)
 
 
 
