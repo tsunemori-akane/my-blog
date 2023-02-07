@@ -132,7 +132,8 @@ console.log('c模块执行')
 > 输出: a模块执行 c模块执行 b模块执行<br/>
 > 为什么仅在第8行require后输出 “c模块执行” , 13行require后不再输出了<br/>
 > 因为第一次执行c模块, CommonJS会将它缓存起来, 相当于拷贝一份, 放在一块新的内存中
-
+#### 扩展文章
+[What require() does](https://nodejs.org/api/modules.html#all-together)
 ### Cyclic dependencies in ESModule
 
 ES module导出的是一个索引——内存地址, 没有办法这样处理. 

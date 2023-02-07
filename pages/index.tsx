@@ -25,7 +25,7 @@ export default function Home() {
           </div>
           <div className='carousel-card'>
             <div className="ribbon ribbon-top-left"><span>motto</span></div>
-            <div className='text-2xl'>Leben Leben and Leben</div>
+            <div className='text-2xl'>Human are bad at remembering things</div>
           </div>
           <div className='carousel-card'>
             <div className="ribbon ribbon-top-left"><span>favorvites</span></div>

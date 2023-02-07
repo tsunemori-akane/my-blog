@@ -127,9 +127,10 @@ Scope: all 7 workspace projects
 ```
 [dependenciesMeta.*.injected](https://pnpm.io/package_json#dependenciesmetainjected)的作用官网讲的很清楚了。 
 
-[//]: # (在文中的例子`nextra-theme-docs`和`docs`都有依赖项`react` `react-dom`等等, 而且`react`在`nextra-theme-docs`中声明在`peerDependencies`里面, 
-那么`nextra`和`nextra-theme-docs`都会作为**硬连接hardlink**到`docs`依赖中, 用`tree`命令可以看到硬连接地址在根目录`.pnpm`下.)
-
+在文中的例子`nextra-theme-docs`和`docs`都有相同的依赖项`react` `react-dom`等等, 而且`react`在`nextra-theme-docs`中声明在`peerDependencies`里面, 
+那么被injected的依赖包nextra将会安装宿主host package的`react`版本. <br/>
+另外, 关于`peerDependencies`由来参见[Domenic's peerDependencies blog](https://nodejs.org/es/blog/npm/peer-dependencies/). 
+ 简单来说该选项的作用是当`NPM`解析`peerDependencies`里面依赖时, 首先判断依赖是不是安装了, 安装了且版本兼容则忽略, 否则, 如果根目录存在该依赖的不同版本, 则在自身的`node_modules`下面安装, 根目录不存在则会安装到根目录.
 
 ```json
 {
@@ -142,7 +143,11 @@ Scope: all 7 workspace projects
   },
 }
 ```
-
+## exports field in package.json
+公用包编译完成打包, 推荐仅导出需要暴露出的模块, 参考写法如下<br/>
+[exports definition](https://nodejs.org/api/packages.html#exports) <br/>
+[webpack package-exports](https://webpack.js.org/guides/package-exports/) <br/>
+[proposal-pkg-exports](https://github.com/jkrems/proposal-pkg-exports/) <br/>
 ## 扩展文章
 [Everything you need to know about monorepo](https://monorepo.tools/) <br/>
 [Monorepo生态](https://github.com/korfuri/awesome-monorepo) <br/>
