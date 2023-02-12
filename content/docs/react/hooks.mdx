@@ -46,6 +46,10 @@ const FunctionalComponent = () => {
   </div>
 </div>
 
+### strict mode
+> In React 18, `StrictMode` gets an additional behaviour to ensure it's compatible with reusable state.
+> When StrictMode is enabled, React intentionally double-invokes effects (`mount` -> `unmount` -> `mount`) for newly mounted components. Like other strict mode behaviors, React will only do this for development builds. <br/>
+[How to support Reusable State in Effects](https://github.com/reactwg/react-18/discussions/18)
 ## useState
 ### tips
 - 利用useState机制触发重新渲染

@@ -1,0 +1,12 @@
+---
+title: '从vue中深度理解mvvm'
+description: '从vue中深度理解mvvm'
+---
+
+## Model-view-viewmodel
+<Image src="/images/vue/mvvm.webp" height={400} width={500} alt="mvvm"/>
+
+## 前置知识
+考虑第一个过程, `view`也就是在`template`中书写的html, 我们需要对类似`v-model`、`v-for`等attribute和childNodes解析, 再渲染到界面上.
+由于每次`document.appendChild`会导致一次`reflow`, 数据到一定数量级后就会体会到肉眼可见的迟缓. 这时候就会使用到[DocumentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment). 
+使用[createDocumentFragment()](https://developer.mozilla.org/en-US/docs/Web/API/Document/createDocumentFragment)创建文档碎片

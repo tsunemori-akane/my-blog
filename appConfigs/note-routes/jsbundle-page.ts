@@ -17,6 +17,10 @@ export const jsBundler = {
     {
       name: 'Monorepo',
       route: '/docs/jsBundler/monorepo'
+    },
+    {
+      name: 'PubSub发布订阅',
+      route: '/docs/jsBundler/pub_sub'
     }
   ]
 };

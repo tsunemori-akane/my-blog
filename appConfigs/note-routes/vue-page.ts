@@ -3,6 +3,10 @@ export const vue = {
   prefix: "/docs/vue",
   children: [
     {
+      name: 'MVVM',
+      route: '/docs/vue/mvvm'
+    },
+    {
       name: '自定义指令',
       route: '/docs/vue/customDirective'
     },

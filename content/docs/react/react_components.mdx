@@ -3,7 +3,8 @@ title: "react function component & class component"
 description: ""
 ---
 
-## Rendering JSX
+## React 16.8前后写法差异
+### return JSX
 - a functional component is a function that returns JSX
 ```js
 import React from "react";
@@ -23,7 +24,7 @@ class ClassComponent extends Component {
 }
 ```
 
-## Handling state
+### Handling state
 - functional components
 ```js
 const FunctionalComponent = () => {
@@ -59,3 +60,5 @@ class ClassComponent extends React.Component {
  }
 }
 ```
+## 如何保存state以及重置state
+[preserving and reset state](https://beta.reactjs.org/learn/preserving-and-resetting-state)
