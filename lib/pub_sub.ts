@@ -1,9 +1,11 @@
 export default class PubSub {
+  messages
+  lastUid: number
   constructor() {
     this.messages = {};
     this.lastUid = -1;
   }
-
+  
   #throwException(e) {
     return function() {
       throw e;
