@@ -6,7 +6,53 @@ description: 'PubSub发布订阅模式'
 import PubSubDemo from "./pubsub_demo"
 
 ## Demo演示
-1. 点击`publish`, 观察到左边badge部分数字随着点击增加, 而右边数字仅增加一次
-2. 点击`unsubscribe`再点击`publish`, 观察到左边数字不再增加.
+初始状态下两个🔔都订阅了`notify`事件, 区别是右边的🔔在被通知一次后就取消订阅, 试试看。
+1. 点击`publish`通知, 观察到左边badge部分数字随着点击增加, 而右边数字仅增加一次
+2. 点击`unsubscribe`再点击`publish`通知, 观察到左边数字不再增加.
 3. 点击`reset`重置
 <PubSubDemo/>
+
+### 相关逻辑
+```js showLineNumbers /subCountOnce/ /subCount/ /unsubscribe/
+const pubsub = new PubSub()
+
+function CountSubscriber({...props}) {
+  const [subCount, dispatch] = useReducer(x=> x+1, 0)
+  const [subCountOnce, dispatchOnce] = useReducer(x=> x+1, 0)
+  const token = useRef(null)
+
+  useEffect(()=>{
+    token.current = pubsub.subscribe('notify', dispatch)
+    //In development mode when reactStrictMode is true, subscribeOnce will be execute twice 
+    pubsub.subscribeOnce('notify', dispatchOnce)
+    return () =>{
+      pubsub.unsubscribe(token.current)
+    }
+  }, [])
+  return (
+    <div className="inline-flex justify-around border-blue-200 rounded border-2 outline outline-offset-4 outline-blue-300">
+      <div className="inline-flex flex-col items-center py-4 px-8">
+        <Badge badgeContent={subCount}>🔔</Badge>
+        <button 
+          className="block mx-auto leading-[20px] text-center rounded-full bg-blue-300 py-1 px-2 text-white"
+          onClick={() => { pubsub.unsubscribe(token.current) }}
+        >
+          unsubscribe
+        </button>
+      </div>
+      <div className="inline-flex flex-col items-center py-4 px-8">
+        <Badge badgeContent={subCountOnce}>🔔</Badge>
+        <span 
+          className="block mx-auto leading-[20px] text-center rounded-full py-1 px-2"
+        >
+          subscribeOnce
+        </span>
+      </div>
+    </div>
+  )
+}
+```
+
+## 具体实现思路
+三个部分, 订阅(sunscribe)、通知(publish)、消息中心(messages) 
+

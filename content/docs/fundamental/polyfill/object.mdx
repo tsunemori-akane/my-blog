@@ -1,0 +1,78 @@
+---
+title: "Object方法相关polyfill"
+description: "Object方法相关polyfill"
+---
+
+## Object.assign
+先看一下表现特征.
+1. 一个对象里面有嵌套对象的话, 改变其中的值会影响到双方, 改变最外层则不会
+2. [Properties on the prototype chain and non-enumerable properties cannot be copied](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign#properties_on_the_prototype_chain_and_non-enumerable_properties_cannot_be_copied)
+```js
+const obj1 = { a: 0, b: { c: 0 } };
+const obj2 = Object.assign({}, obj1);
+console.log(obj2); // { a: 0, b: { c: 0 } }
+
+obj1.a = 1;
+console.log(obj1); // { a: 1, b: { c: 0 } }
+console.log(obj2); // { a: 0, b: { c: 0 } }
+
+obj2.b.c = 3;
+console.log(obj1); // { a: 1, b: { c: 3 } }
+console.log(obj2); // { a: 2, b: { c: 3 } }
+
+const v1 = "abc";
+const v2 = true;
+const v3 = 10;
+const v4 = Symbol("foo");
+
+const obj3 = Object.assign({}, v1, null, v2, undefined, v3, v4);
+// Primitives will be wrapped, null and undefined will be ignored.
+// Note, only string wrappers can have own enumerable properties.
+console.log(obj3); // { "0": "a", "1": "b", "2": "c" }
+
+```
+正式重写
+```js
+if(!Object.assign) {
+  Object.assign = function(target) {
+    var newVal = Object(target);
+    for(var i = 1; i < arguments.length; i ++) {
+      var nextArg = arguments[i];
+      // Primitives will be wrapped, null and undefined will be ignored.
+      if(nextArg !== null && nextArg !== undefined) {
+        for(var nextKey in nextArg) {
+          if(Object.prototype.hasOwnProperty.call(nextArg, nextKey)) {
+            newVal[nextKey] = nextArg[nextKey];
+          }
+        }
+      }
+    }
+    return newVal;
+  }
+}
+```
+## Object.is
+考虑到两种情况: 
+1. 0 === -0 // true
+2. NaN === NaN // false
+```js
+if (!Object.is) {
+  Object.defineProperty(Object, "is", {
+    value: function (x, y) {
+      // SameValue algorithm
+      if (x === y) {
+        // return true if x and y are not 0, OR
+        // if x and y are both 0 of the same sign.
+        // This checks for cases 1 and 2 above.
+        return x !== 0 || 1 / x === 1 / y;
+      } else {
+        // return true if both x AND y evaluate to NaN.
+        // The only possibility for a variable to not be strictly equal to itself
+        // is when that variable evaluates to NaN (example: Number.NaN, 0/0, NaN).
+        // This checks for case 3.
+        return x !== x && y !== y;
+      }
+    }
+  });
+}
+```

@@ -6,7 +6,129 @@ description: '从vue中深度理解mvvm'
 ## Model-view-viewmodel
 <Image src="/images/vue/mvvm.webp" height={400} width={500} alt="mvvm"/>
 
-## 前置知识
-考虑第一个过程, `view`也就是在`template`中书写的html, 我们需要对类似`v-model`、`v-for`等attribute和childNodes解析, 再渲染到界面上.
-由于每次`document.appendChild`会导致一次`reflow`, 数据到一定数量级后就会体会到肉眼可见的迟缓. 这时候就会使用到[DocumentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment). 
+## 数据绑定
+考虑第一个过程, `view`也就是在`template`中书写的html, 我们需要对类似`v-model`、`v-for`等attribute和childNodes解析, 与`model`中的数据进行绑定再挂载mount到界面上. 挂载用到`appendChild`, 
+而由于每次`document.appendChild`会导致一次`reflow`, 数据到一定数量级后就会体会到肉眼可见的迟缓. 这时候就会使用到[DocumentFragment](https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment). 
 使用[createDocumentFragment()](https://developer.mozilla.org/en-US/docs/Web/API/Document/createDocumentFragment)创建文档碎片
+
+### 数据对象响应式
+来源于霍春阳Vue.js设计与实现一书, 第四章实现响应系统。
+```js showLineNumbers /effectsToRun/ /cleanup/
+// 存储副作用函数的桶
+const bucket = new WeakMap()
+
+// 原始数据
+const data = { ok: true, text: 'hello world', foo: 1}
+// 对原始数据的代理
+const obj = new Proxy(data, {
+  // 拦截读取操作
+  get(target, key) {
+    // 将副作用函数 activeEffect 添加到存储副作用函数的桶中
+    track(target, key)
+    // 返回属性值
+    return target[key]
+  },
+  // 拦截设置操作
+  set(target, key, newVal) {
+    // 设置属性值
+    target[key] = newVal
+    // 把副作用函数从桶里取出并执行
+    trigger(target, key)
+  }
+})
+
+function track(target, key) {
+  let depsMap = bucket.get(target)
+  if (!depsMap) {
+    bucket.set(target, (depsMap = new Map()))
+  }
+  let deps = depsMap.get(key)
+  if (!deps) {
+    depsMap.set(key, (deps = new Set()))
+  }
+  deps.add(activeEffect)
+  activeEffect.deps.push(deps)
+}
+
+function trigger(target, key) {
+  const depsMap = bucket.get(target)
+  if (!depsMap) return
+  const effects = depsMap.get(key)
+
+  const effectsToRun = new Set()
+  effects && effects.forEach(effectFn => {
+    //避免无限递归循环
+    if(effectFn !== activeEffect) {
+      effectsToRun.add(effectFn))
+    }
+  }
+  effectsToRun.forEach(effectFn => effectFn())
+  // effects && effects.forEach(effectFn => effectFn())
+}
+
+// 用一个全局变量存储当前激活的 effect 函数
+let activeEffect
+// effect 栈
+const effectStack = []
+
+function effect(fn) {
+  const effectFn = () => {
+    cleanup(effectFn)
+    // 当调用 effect 注册副作用函数时，将副作用函数复制给 activeEffect
+    activeEffect = effectFn
+    // 在调用副作用函数之前将当前副作用函数压栈
+    effectStack.push(effectFn)
+    fn()
+    // 在当前副作用函数执行完毕后，将当前副作用函数弹出栈，并还原 activeEffect 为之前的值
+    effectStack.pop()
+    activeEffect = effectStack[effectStack.length - 1]
+  }
+  // activeEffect.deps 用来存储所有与该副作用函数相关的依赖集合
+  effectFn.deps = []
+  // 执行副作用函数
+  effectFn()
+}
+
+function cleanup(effectFn) {
+  for (let i = 0; i < effectFn.deps.length; i++) {
+    const deps = effectFn.deps[i]
+    deps.delete(effectFn)
+  }
+  effectFn.deps.length = 0
+}
+
+effect(() => {
+  console.log('effect run')
+  document.body.innerText = obj.ok ? obj.text : 'not'
+})
+
+setTimeout(() => {
+  obj.ok = false
+  setTimeout(() => {
+    obj.text = 'hello vue3'
+  }, 1000)
+}, 1000)
+```
+
+1. `trigger`函数中设置`effectsToRun`为`Set`类型的数据结构, 是为了防止`effect`函数还未执行完成的情况下又执行自身, 无限循环。
+ 比如这种情况`effect(() => obj.foo++)`, `effect`中同时触发了get和set。
+2. `cleanup`函数是为了解决`obj.ok`由初始状态下`true`->`false`后, `obj.text`对应的副作用函数仍然留存在`bucket`中
+- 没有清除函数`cleanup`情况下`track`会被触发4次, `bucket`结构如下
+```md /effectFn/ /deps/
+WeakMap
+└─ 0: (Object => Map(2))
+   ├─ key: { ok: false, text: 'hello world', foo: 1}
+   └─ value: 
+      └─ Map(2)
+          ├─ 0: {"ok" => Set(1)}
+          │  ├─ key: "ok"
+          │  └─ value: Set(1) 
+          │     └─ 0: effectFn () => {…}  
+          │        └─ deps: (4) [Set(1), Set(1), Set(1), Set(1)]
+          └─ 1: {"text" => Set(1)}
+             ├─ key: "text"
+             └─ value: Set(1)
+                └─ 0: effectFn () => {…}  
+                   └─ deps: (4) [Set(1), Set(1), Set(1), Set(1)]
+```
+- 有清除函数`cleanup`情况下`track`会被触发3次, `bucket`结构中`text`的`deps`为空, 因而不会触发`trigger`函数中的`effectFn`, 也就没有第4次`track`这才是符合期待的. 

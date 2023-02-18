@@ -6,27 +6,22 @@ export const fundamental =
     {
       name: "类型转换",
       route: "/docs/fundamental/typeConversion",
-      description: "类型转换"
     },
     {
       name: "函数闭包",
       route: "/docs/fundamental/closure",
-      description: "闭包"
     },
     {
       name: "原型",
       route: "/docs/fundamental/prototype",
-      description: ""
     },
     {
       name: "继承",
       route: "/docs/fundamental/inheritance",
-      description: ""
     },
     {
       name: "正则",
       route: "/docs/fundamental/regularExpression",
-      description: ""
     },
     {
       name: "事件循环",
@@ -39,6 +34,10 @@ export const fundamental =
         {
           name: "数组方法",
           route: "/docs/fundamental/polyfill/array",
+        },
+        {
+          name: "Object方法",
+          route: "/docs/fundamental/polyfill/object",
         },
         {
           name: "深拷贝",
