@@ -56,3 +56,34 @@ function CountSubscriber({...props}) {
 ## 具体实现思路
 三个部分, 订阅(sunscribe)、通知(publish)、消息中心(messages) 
 
+- 先贴一个`openAI`回答的🤔
+```js
+// 订阅
+function subscribe (topic, callback) {
+    if (!this._topics[topic]) this._topics[topic] = [];
+    this._topics[topic].push(callback);
+}
+
+// 发布
+function publish (topic) {
+    var args;
+    if (!this._topics[topic]) return false;
+    args = Array.prototype.slice.call(arguments, 1);
+    for (var i = 0; i < this._topics[topic].length; i++) {
+        this._topics[topic][i].apply(this, args);
+    }
+    return true;
+}
+
+// 应用示例
+var pubSubBroker = {
+    _topics: {},
+    subscribe: subscribe,
+    publish: publish
+};
+
+// 调用示例
+pubSubBroker.subscribe('event', callbackFunction);
+pubSubBroker.publish('event', arg1, arg2);
+```
+

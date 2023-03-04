@@ -12,7 +12,7 @@ description: '从vue中深度理解mvvm'
 使用[createDocumentFragment()](https://developer.mozilla.org/en-US/docs/Web/API/Document/createDocumentFragment)创建文档碎片
 
 ### 数据对象响应式
-来源于霍春阳Vue.js设计与实现一书, 第四章实现响应系统。
+来源于霍春阳Vue.js设计与实现一书, 第四章实现对于原始值的响应系统。
 ```js showLineNumbers /effectsToRun/ /cleanup/
 // 存储副作用函数的桶
 const bucket = new WeakMap()
@@ -62,7 +62,15 @@ function trigger(target, key) {
       effectsToRun.add(effectFn))
     }
   }
-  effectsToRun.forEach(effectFn => effectFn())
+  effectsToRun.forEach(effectFn => {
+    // 使用调度器
+    if(effectFn.options.scheduler) {
+      effectFn.options.scheduler(effectFn)
+    }
+    else {
+      effectFn()
+    }
+  })
   // effects && effects.forEach(effectFn => effectFn())
 }
 
@@ -71,7 +79,7 @@ let activeEffect
 // effect 栈
 const effectStack = []
 
-function effect(fn) {
+function effect(fn, options = {}) {
   const effectFn = () => {
     cleanup(effectFn)
     // 当调用 effect 注册副作用函数时，将副作用函数复制给 activeEffect
@@ -83,6 +91,8 @@ function effect(fn) {
     effectStack.pop()
     activeEffect = effectStack[effectStack.length - 1]
   }
+  //将 options 挂载在 effectFn 上
+  effectFn.options = options
   // activeEffect.deps 用来存储所有与该副作用函数相关的依赖集合
   effectFn.deps = []
   // 执行副作用函数

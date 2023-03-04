@@ -1,0 +1,53 @@
+---
+title: '移动端适配'
+description: '移动端适配'
+---
+
+## CSS pixel 和 device pixel
+- At zoom level 100% one CSS pixel is exactly equal to one device pixel.
+- `screen.width` 和 `screen.height` 得出的尺寸基准是设备像素(device pixel), 这个值就是电脑屏幕的大小.
+- `window.innerWidth` 和 `window.innerHeight` 得出的尺寸是浏览器窗口的大小(包含滚动条). 此属性尺寸基准是css像素(css pixel).
+放大的时候, 两个值会变小
+- `window.pageXOffset` 和 `window.pageYOffset` 代表滚动偏移幅度, 跟滚动条滚动的距离无关. 此属性尺寸基准是css像素(css pixel).
+
+## viewport
+### 浏览器中的viewport
+参考[quirksmode viewports](https://www.quirksmode.org/mobile/viewports.html)
+- 在浏览器端, `viewport`等同于浏览器窗口. 通过`document.documentElement`的`clientWidth`和`clientHeight`获取, 与`innerHeight`和`innerWidth`区别在于不包含滚动条(测试于chrome浏览器)
+- 获取`<html>`的尺寸, 通过`document.documentElement`的 `offsetWidth` 和 `offsetHeight`
+- 在鼠标事件`Event Coordinates`中有三个关于事件发生位置的属性`pageX/Y`、`clientX/Y`、`screenX/Y`
+  1. pageX/Y gives the coordinates relative to the `<html>` element in CSS pixels.
+  2. clientX/Y gives the coordinates relative to the viewport in CSS pixels.
+  3. screenX/Y gives the coordinates relative to the screen in device pixels.
+
+### 移动端中的viewport
+首先请看iphone4到iphone11的尺寸演变[THe Ultimate Guide To iphone Resolutions](https://www.paintcodeapp.com/news/ultimate-guide-to-iphone-resolutions)
+  #### layout viewport
+  使用`document.documentElement` 下面的 `clientHeight` 和 `clientWidth` 测量尺寸
+  #### visual viewport
+  使用`window.innerWidth`和`window.innerHeight` 测量尺寸
+
+## 利用视口单位适配页面
+### 仅使用vw作为CSS单位
+```scss
+//iPhone 6尺寸作为设计稿基准
+$vw_base: 375; 
+@function vw($px) {
+    @return ($px / 375) * 100vw;
+}
+```
+### 使用`calc()`控制缩放比率
+
+- 假设你要处理下面两种情况：
+视口宽度是 400px 时, font-size 是 16px
+视口宽度是 800px 时, font-size 是 24px
+<Image src="/images/css/calc_font_size.webp" height={300} width={400}/>
+其中`100vw`是变量, 范围从400px-800px
+
+## 流式布局Fluid Typography
+[使用Flexible实现适配](https://github.com/amfe/article/issues/17): 
+在`<html>`元素上增加一个data-dpr属性, 以及一个`font-size`样式。JS会根据不同的设备添加不同的`data-dpr`值, 比如说2或者3, 同时会给html加上对应的`font-size`的值, 比如说75px。
+如此一来, 页面中的元素, 都可以通过`rem`单位来设置。他们会根据html元素的`font-size`值做相应的计算, 从而实现屏幕的适配效果。
+### px转rem
+[px2rem](https://github.com/songsiqi/px2rem) <br/>
+[测试移动端是否支持0.5px](https://github.com/amfe/lib-flexible/blob/2.0/index.js#L32)

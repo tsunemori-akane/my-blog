@@ -1,0 +1,74 @@
+---
+title: 'TS CHEATSHEET'
+description: 'typescript笔记小结'
+---
+
+## 一般工具类型介绍
+### Exclude
+```ts
+//提取T中不包含在U中的类型
+type Exclude<T, U> = T extends U ? never : T;
+type T = Exclude<"a" | "b" | "c", "a" | "b">;
+
+("a" extends "a" | "b" ? never : "a") // => never
+| ("b" extends "a" | "b" ? never : "b") // => never
+| ("c" extends "a" | "b" ? never : "c") // => "c"
+
+never | never | "c" // => "c"
+```
+### Partial | Required | Pick | Readonly
+```ts
+type Partial<T> = { [P in keyof T]?: T[P] };
+type Required<T> = { [P in keyof T]-?: T[P] };
+
+// From T, pick a set of properties whose keys are in the union K
+type Pick<T, K extends keyof T> = { [P in K]: T[P] };
+
+type Readonly<T> = { readonly [P in keyof T]: T[P] };
+
+type Item = { a: string; b: number; c: boolean };
+type T1 = Partial<Item>; // {a?: string | undefined; b?: number | undefined; c?: boolean | undefined;}
+```
+### Record
+```ts
+// Construct a type with a set of properties K of type T
+type Record<K extends keyof any, T> = {
+    [P in K]: T;
+};
+//例子：搭配联合类型
+type RequestMethods = 'GET'|'POST'| 'DELETE'
+type MethodsAny = Record<RequestMethods, string>
+let method1:MethodsAny = {
+    GET: '200',
+    POST: '300',
+    DELETE:'400'
+}
+//例子：搭配接口
+interface PersonModel {
+    name:string,
+    age:number
+}
+type student = Record<string, PersonModel>
+
+let s:student = {
+    'student1':{
+        name:'小凌',
+        age:18
+    },
+    'student2':{
+        name:'小李',
+        age:19
+    }
+}
+```
+
+
+### Extract等
+```ts
+//提取T中包含在U中的类型
+type Extract<T, U> = T extends U ? T : never;
+type NonNullable<T> = T extends null | undefined ? never : T;
+type Parameters<T extends (...args: any) => any> = T extends (...args: infer P) => any ? P : never;
+//返回函数的返回类型
+type ReturnType<T extends (...args: any) => any> = T extends (...args: any) => infer R ? R : any;
+```

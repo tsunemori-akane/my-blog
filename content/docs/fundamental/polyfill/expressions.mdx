@@ -1,0 +1,20 @@
+---
+title: "expressions相关polyfill"
+description: "expressions相关polyfill"
+---
+
+## `instanceof` operator
+```js
+function instanceof(obj, constructor) {
+  //let proto = Object.getPrototypeOf(obj)
+  let proto = obj.__proto__;
+  while(proto) {
+    if(proto === constructor.prototype) {
+      return true;
+    }
+    //proto = Object.getPrototypeOf(obj)
+    proto = proto.__proto__;
+  }
+  return false;
+}
+```

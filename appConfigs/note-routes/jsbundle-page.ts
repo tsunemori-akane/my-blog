@@ -21,6 +21,10 @@ export const jsBundler = {
     {
       name: 'PubSub发布订阅',
       route: '/docs/jsBundler/pub_sub'
+    },
+    {
+      name: 'TS Cheatsheet',
+      route: '/docs/jsBundler/ts_cheatsheet'
     }
   ]
 };

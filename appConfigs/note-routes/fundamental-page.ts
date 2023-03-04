@@ -40,6 +40,11 @@ export const fundamental =
           route: "/docs/fundamental/polyfill/object",
         },
         {
+          name: "promise方法",
+          route: "/docs/fundamental/polyfill/promise",
+          disabled: true
+        },
+        {
           name: "深拷贝",
           route: "/docs/fundamental/polyfill/deepclone",
         },
@@ -50,6 +55,10 @@ export const fundamental =
         {
           name: "pipe&compose",
           route: "/docs/fundamental/polyfill/pipe_compose",
+        },
+        {
+          name: "expressions相关",
+          route: "/docs/fundamental/polyfill/expressions",
         },
       ]
     },

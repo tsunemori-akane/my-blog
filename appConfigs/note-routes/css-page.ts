@@ -12,6 +12,10 @@ export const css =
       route: '/docs/css/css_animate'
     },
     {
+      name: 'Mobile Adaption',
+      route: '/docs/css/mobileAdaption'
+    },
+    {
       name: 'Css Modules',
       route: '/docs/css/css_modules'
     },
