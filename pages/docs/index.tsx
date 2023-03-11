@@ -2,6 +2,7 @@ import React, { ReactElement } from "react"
 import { DocLayout } from "#/components/docLayout"
 import { BlockLink } from "#/components/blocklink"
 import { DocsMainPageRoute } from "#/appConfigs/dochomepage"
+import { NoteRoutes } from "#/appConfigs/note-routes"
 export default function Page() {
   return (
     <>
@@ -14,7 +15,6 @@ export default function Page() {
                 return (
                   <BlockLink key={e.title} icon={<e.icon/>} title={e.title} href={e.href} />
                 )
-                
               })
             }
           </div>
@@ -24,5 +24,8 @@ export default function Page() {
   )
 }
 
-Page.PageLayout = DocLayout
+Page.PageLayout = (page) => {
+  return <DocLayout routes={NoteRoutes}>{page}</DocLayout>
+}
+
  

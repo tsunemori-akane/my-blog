@@ -35,6 +35,15 @@ $vw_base: 375;
 @function vw($px) {
     @return ($px / 375) * 100vw;
 }
+@function vw_landscape($px) {
+    @return ($px / 375) * 100vh;
+}
+//使用
+@media screen and (orientation: landscape) {
+  html {
+    font-size: vw_landscape(20);
+  }
+}
 ```
 ### 使用`calc()`控制缩放比率
 
@@ -51,3 +60,11 @@ $vw_base: 375;
 ### px转rem
 [px2rem](https://github.com/songsiqi/px2rem) <br/>
 [测试移动端是否支持0.5px](https://github.com/amfe/lib-flexible/blob/2.0/index.js#L32)
+
+## 横屏适配
+### contain模式
+两种情况
+- 内容窗口的宽撑满屏幕
+此时屏幕`宽/高`比 < 内容窗口的`宽/高`比
+- 内容窗口的高撑满屏幕
+此时屏幕`宽/高`比 > 内容窗口的`宽/高`比

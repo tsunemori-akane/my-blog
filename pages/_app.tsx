@@ -11,13 +11,13 @@ import TopLayout from '#/components/topLayout'
 // }
 
 export default function App({ Component, pageProps }) {
-  //const getLayout = Component.PageLayout || ((page) => page)
+  const getLayout = Component.PageLayout || ((page) => page)
   return (
     <>
-    
       <div className="flex min-h-screen flex-col">
         <TopLayout/>
-        <>
+        { getLayout(<Component {...pageProps} />) }
+        {/* <>
           { Component.PageLayout ? (
             <Component.PageLayout>
               <Component {...pageProps} />
@@ -25,10 +25,8 @@ export default function App({ Component, pageProps }) {
           )
             : <Component {...pageProps} />
           }
-        </>
+        </> */}
       </div>
-    
-    
     </>
   )
 }

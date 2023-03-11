@@ -6,6 +6,7 @@ import { TOC } from "#/components/table-of-content"
 import path from 'node:path'
 import { ActiveAnchorProvider } from "#/components/contexts/activeAnchorProvider"
 import { PageSEO } from "#/components/mdx-head"
+import { NoteRoutes } from "#/appConfigs/note-routes"
 
 const contentDir = 'content/docs'
 const root = process.cwd()
@@ -28,7 +29,9 @@ export default function Page({slug, mdxSource, toc, frontmatter}) {
     </>
   )
 }
-Page.PageLayout = DocLayout
+Page.PageLayout = (page) => {
+  return <DocLayout routes={NoteRoutes}>{page}</DocLayout>
+}
 
 export async function getStaticPaths() {
   const prefixPath = path.join(root, contentDir)
