@@ -1,0 +1,31 @@
+---
+title: "回溯"
+description: ”回溯backTrack“
+---
+
+## leetcode 中典型题
+No.22 Generate Parenttheses
+- 回溯法, 个人理解是有限制条件的全排列. 该题的限制条件为-每次添加闭括号`)`需要确保此时开括号`(`的数量 $\geq$闭括号`)`的数量
+```js
+class Solution {
+public:
+    vector<string> generateParenthesis(int n) {
+        vector<string> result;
+        string current = "";
+        backTrack(result, current, n, 0, 0);
+        return result;
+    }
+    void backTrack(vector<string>& result, string current, int n, int open, int close) {
+        if(current.length() == 2*n) {
+            result.push_back(current);
+            return;
+        }
+        if(open < n) {
+            backTrack(result, current+'(', n, open+1, close);
+        }
+        if(close < open) {
+            backTrack(result, current+')', n, open, close+1);
+        }
+    }
+};
+```

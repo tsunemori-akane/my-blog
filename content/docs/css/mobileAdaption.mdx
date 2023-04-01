@@ -3,17 +3,19 @@ title: '移动端适配'
 description: '移动端适配'
 ---
 
-## CSS pixel 和 device pixel
+## CSS pixel 和 Device pixel
 - At zoom level 100% one CSS pixel is exactly equal to one device pixel.
-- `screen.width` 和 `screen.height` 得出的尺寸基准是设备像素(device pixel), 这个值就是电脑屏幕的大小.
+- `screen.width` 和 `screen.height` 得出的尺寸基准是设备像素(device pixel), 这个值就是屏幕的大小.
 - `window.innerWidth` 和 `window.innerHeight` 得出的尺寸是浏览器窗口的大小(包含滚动条). 此属性尺寸基准是css像素(css pixel).
 放大的时候, 两个值会变小
 - `window.pageXOffset` 和 `window.pageYOffset` 代表滚动偏移幅度, 跟滚动条滚动的距离无关. 此属性尺寸基准是css像素(css pixel).
+- `dpr` = `screen.width` / `window.innerWidth` = `window.devicePixelRatio`
 
 ## viewport
 ### 浏览器中的viewport
 参考[quirksmode viewports](https://www.quirksmode.org/mobile/viewports.html)
-- 在浏览器端, `viewport`等同于浏览器窗口. 通过`document.documentElement`的`clientWidth`和`clientHeight`获取, 与`innerHeight`和`innerWidth`区别在于不包含滚动条(测试于chrome浏览器)
+- 在浏览器端, `viewport`等同于浏览器窗口. 通过`document.documentElement`的`clientWidth`和`clientHeight`获取, 和`window.innerWidth`区别在于不包含滚动条(测试于chrome浏览器)
+- `viewport`用来约束`html`大小
 - 获取`<html>`的尺寸, 通过`document.documentElement`的 `offsetWidth` 和 `offsetHeight`
 - 在鼠标事件`Event Coordinates`中有三个关于事件发生位置的属性`pageX/Y`、`clientX/Y`、`screenX/Y`
   1. pageX/Y gives the coordinates relative to the `<html>` element in CSS pixels.

@@ -4,4 +4,30 @@ description: '滑动窗口'
 ---
 
 ## leetcode中的典型题
+[No.3 Longest Substring Without Repeating Characters](https://leetcode.cn/problems/longest-substring-without-repeating-characters/)
+思路：
+1. 定义`temp`记录最长不重复子串, 左右两指针`i` `j`, map容器判断当前窗口是否有重复值, `count`记录最大长度
+2. 开始移动右指针，同时判断当前右指针指向的字符是否已经存在, 存在则移动左指针, 不存在则移动右指针并更新temp.
+```cpp showLineNumbers 
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        string temp;
+        int count = 0;
+        unordered_map<char, int> m;
+        for(int i=0, j=0; j<s.size() && i<s.size();) {
+            if(m[s[j]] > 0) {
+                m[s[i]] -= 1;
+                ++i;
+            } else {
+                m[s[j]] = 1;
+                count = temp.size();
+                temp = count >= j-i+1 ? temp : s.substr(i, j-i+1);
+                ++j;
+            }
+        }
+        return temp.size();
+    }
+};
+```
 - [76.最小覆盖子串](https://leetcode.cn/problems/minimum-window-substring/)

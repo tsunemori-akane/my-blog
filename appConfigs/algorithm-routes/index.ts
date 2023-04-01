@@ -1,5 +1,9 @@
 import { SlidingWindow } from "./SlidingWindow";
 
 export const AlgorithmRoutes = [
-  SlidingWindow
+  SlidingWindow,
+  {
+    name: "回溯法",
+    route: "/algorithm/back-track",
+  }
 ];
