@@ -10,6 +10,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      gridTemplateColumns: {
+        'doc': 'repeat(auto-fill,minmax(max(250px, calc((100% - 1rem * 2) / 3)), 1fr))'
+      },
       colors: {
         ...colors,
         "docsy-blue": '#30638e'

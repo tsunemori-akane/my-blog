@@ -3,12 +3,163 @@ title: '实现promise'
 description: 'Implement promise'
 ---
 
+## 简单了解
+参阅[MDN Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 
+1. Promise 主要用来改进异步编程体验
+2. Promise 有三个状态`pending`、`fullfilled`、`rejected`
+3. `fullfilled`的Promise实例会转入`.then()`处理；`rejected`会转入`.catch()`处理
+
+## promise类的结构
+```js
+const PENDING = "pending";
+const FULLFILLED = "fullfilled";
+const REJECTED = "rejected";
+
+class MyPromise {
+  constructor(executor) {
+    this.state = PENDING;
+    this.val = undefined; // 成功状态promise值
+    this.reason = undefined; // 失败状态下的promise值
+    this.onFullfilledCallbacks = []; // 成功回调队列
+    this.onRejectedCallbacks = []; // 失败回调队列
+    executor(this.resolve.bind(this), this.reject.bind(this)); // 直接执行promise构造函数
+  }
+
+  resolve(val) {}
+  reject(reason) {}
+  then(onfullfilled, onrejected) {}
+  catch(onrejected) {}
+  finally(cb) {}
+  static resolve (arg) {}
+  static reject (arg) {}
+  static all (promises) {}
+  static race (promises) {}
+}
+```
+
 ## resolve
 ```js
-/**
- * @method resolve
- * @static
- * @param {Any} 
- * @return {Promise}
- */
+resolve(x) {
+  if(this.state === PENDING) {
+    if (x != null && typeof x === "object" && typeof x.then === "function") {
+      x.then(this.resolve.bind(this), this.reject.bind(this));
+    }
+    else {
+      // pending 状态变成fullfilled状态
+      this.state = FULLFILLED;
+      this.val = x;
+      this.onFullfilledCallbacks.forEach(fn => {
+        fn(this.val);
+      });
+    }
+  }
+}
+```
+## static resolve
+```js
+static resolve(arg) {
+  return new MyPromise((resolve, reject) => {
+    if(arg !== null && typeof arg ==="object" && typeof arg.then === "function") {
+      arg.then(resolve, reject);
+    } else {
+      resolve(arg);
+    }
+  })
+}
+```
+
+## reject
+```js
+reject(r) {
+  if(this.state === PENDING) {
+    if(r !== null && typeof r === "object" && typeof r.then === "function") {
+      r.then(this.resolve.bind(this), this.reject.bind(this));
+    }
+    else {
+      // pending 状态变为fullfilled状态
+      this.state = REJECTED;
+      this.reason = r;
+      this.onRejectedCallbacks.forEach(fn => fn(this.reason));
+    }
+  }
+}
+```
+
+## then
+```js
+then(onfullfilled, onrejected) {
+  onfullfilled = typeof onfullfilled === "function" ? onfullfilled : value => value;
+  onrejected = typeof onrejected === "function" ? onrejected : reason => reason;
+  return new MyPromise((resolve, reject) => {
+    let fullfilled = value => {
+      try {
+        let x = onfullfilled(value);
+        // x为 MyPromise 或 thenable
+        if(x !== null && typeof x === "object" && typeof x.then === "function") {
+          x.then(resolve, reject);
+        } else {
+          resolve(x);
+        }
+      } catch(err) {
+        reject(err)
+      }
+    }
+    setTimeout(() => {
+      if (this.state === PENDING) {
+        this.onFullfilledCallbacks.push(fullfilled);
+        this.onRejectedCallbacks.push(rejected);
+      }else if(this.state === FULLFILLED) {
+        fullfilled(this.val);
+      }else {
+        rejected(this.reason)
+      }
+    }, 0);
+  })
+}
+```
+
+## finally
+```js
+
+```
+
+## race
+```js
+static race (promises) {
+  return new MyPromise((resolve, reject) => {
+    for(let i = 0; i < promises.length; i++) {
+      MyPromise.resolve(promises[i]).then((data) => {
+        resolve(data);
+        return;
+      }, (err) => {
+        reject(err);
+        return;
+      });
+    }
+  })
+}
+```
+
+## all
+```js
+static all(promises) {
+  return new MyPromise((resolve, reject) => {
+    let index = 0;
+    let result = [];
+    function processValue (i, data) {
+      result[i] = data;
+      if(++index === promises.length) {
+        resolve(result);
+      }
+    }
+    for(let i = 0; i < promises.length; i++) {
+      MyPromise.resolve(promises[i]).then((data) => {
+        processValue(i, data);
+      }, (err) => {
+        reject(err);
+        return;
+      });
+    }
+  });
+}
 ```

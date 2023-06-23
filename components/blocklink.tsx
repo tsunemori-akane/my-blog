@@ -12,17 +12,17 @@ export function BlockLink({ href, icon, title}) {
         'active:shadow-sm active:shadow-gray-200'
       )}
     >
-      <span
+      <div
         className={cn(
           'flex gap-2 p-4 font-bold',
           styles.blocklink
         )}
       >
         {icon}
-        <span className="flex gap-1">
+        <div className="flex gap-1 text-ellipsis">
           {title}
-        </span>
-      </span>
+        </div>
+      </div>
     </Link>
   )
 }

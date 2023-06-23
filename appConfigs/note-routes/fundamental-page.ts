@@ -42,7 +42,7 @@ export const fundamental =
         {
           name: "promise方法",
           route: "/docs/fundamental/polyfill/promise",
-          disabled: true
+          // disabled: true
         },
         {
           name: "深拷贝",

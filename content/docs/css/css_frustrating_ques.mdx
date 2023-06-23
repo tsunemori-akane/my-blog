@@ -1,0 +1,43 @@
+---
+title: "css problem"
+description: "css problem"
+---
+
+## Fix CSS heigth:100% not working
+### using `min-height` or `max-height`
+```css
+html, body {
+  min-height: 100%;
+}
+.main {
+  height: 100%; // ❌ not working
+}
+```
+
+### using flex layouts
+```html
+<div class="container">
+  <div class="block1"></div>
+  <div class="block2">
+    <p>abcdefg</p>
+    <p>abcdefg</p>
+    <p>abcdefg</p>
+  </div>
+</div>
+```
+```css
+.container {
+  display: flex;
+}
+.block1 {
+  background-color: acqua;
+  height: 100%; // ❌ block1 will not showing
+  width: 250px;
+}
+```
+To fix this, we just remove the `height: 100%` and block1 is now appearing
+When using flex the align-items control the vertical behavior.
+It has default value of stretch so it just work naturally.
+But when we introduce `height:100%`, this will overrides the flex calculation.
+and the calculation of the height of `.block1` now depends on the parent `.container`
+Since the parent does not have a ***explicit*** height, so the child element's height becomes zero

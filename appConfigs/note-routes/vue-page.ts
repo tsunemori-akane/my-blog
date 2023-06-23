@@ -14,9 +14,5 @@ export const vue = {
       name: 'Vue Loader',
       route: '/docs/vue/vue_loader'
     },
-    {
-      name: '内置组件',
-      route: '/docs/vue/buildIn_components'
-    }
   ]
 }

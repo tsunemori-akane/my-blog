@@ -6,10 +6,10 @@ import { NoteRoutes } from "#/appConfigs/note-routes"
 export default function Page() {
   return (
     <>
-      <main className="ml-6 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
+      <main className="mx-3 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
         <div className="mx-auto w-full min-w-0">
           <h1 className="mt-2 text-4xl font-bold tracking-tight">Categories</h1>
-          <div className="grid grid-cols-3 gap-4 mt-6">
+          <div className="grid grid-cols-doc gap-4 mt-6">
             {
               DocsMainPageRoute.map(e => {
                 return (

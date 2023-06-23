@@ -19,5 +19,9 @@ export const css =
       name: 'Css Modules',
       route: '/docs/css/css_modules'
     },
+    {
+      name: 'Css Problem',
+      route: '/docs/css/css_frustrating_ques'
+    },
   ]
 };

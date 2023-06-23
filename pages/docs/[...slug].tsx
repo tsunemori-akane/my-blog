@@ -15,7 +15,7 @@ export default function Page({slug, mdxSource, toc, frontmatter}) {
   return (
     <>
       <PageSEO frontmatter={frontmatter} />
-      <main className="ml-6 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
+      <main className="mx-3 relative py-6 lg:gap-10 lg:py-10 xl:grid xl:grid-cols-[1fr_300px]">
         <ActiveAnchorProvider>
           <div className="mx-auto w-full min-w-0">
             <MDXLayoutRender mdxSource={mdxSource} />
