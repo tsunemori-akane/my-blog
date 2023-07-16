@@ -31,6 +31,17 @@ var pipe = function pipe() {
 };
 ```
 
+### promise版本
+```js
+function pipePromise(...fns) {
+  return function(x) {
+    return fns.reduce((p, fn)=> {
+      return p.then(fn)
+    }, Promise.resolve(x))
+  }
+}
+```
+
 ## compose函数
 [ramda](https://ramdajs.com/docs/#compose)中`compose`函数例子如下
 ```js
@@ -41,3 +52,24 @@ yellGreeting('James', 'Bond'); //=> "THE NAME'S BOND, JAMES BOND"
 R.compose(Math.abs, R.add(1), R.multiply(2))(-4) //=> 7
 ```
 可以看出`compose`函数与`pipe`执行顺序相反, `reverse`参数或者使用`refuceRight`从右向左执行
+
+## isObjectEqual比较对象字段相等
+```ts
+function isObjectEqual(a: Record<string, any>, b:Record<string, any>) {
+  if(!a || !b) return false;
+  const aProps = Object.getOwnPropertyName(a);
+  const bProps = Object.getOwnPropertyName(b);
+  if(aProps.length !== bProps.length) return false;
+  for(let i = 0; i < aProps.length; i++) {
+    const propName = aProps[i];
+    const propA = a[propName];
+    const propB = b[propName];
+    if(!b.hasOwnProperty(propName)) return false;
+    if(propA instanceof Object) {
+      if(!isObjectEqual(propA, propB)) return false;
+    } else if(propA !== propB) {
+      return false;
+    }
+  }
+}
+```

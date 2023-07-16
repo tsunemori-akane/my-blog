@@ -6,14 +6,18 @@ import Image from "next/image"
 //import { useSelectedLayoutSegment } from "next/navigation"
 import { useRouter } from "next/router"
 import { cn } from "#/lib/utils"
+import { MenuIcon } from "./svg/menu"
 
 export function MainNav({ items }) {
   const router = useRouter()
   return (
     <div className="flex items-center gap-6">
-      <Link href="/">
+      <Link href="/" className="hidden md:block">
         <Image src="/images/logo/blogger.png" width="48" height="48" alt="blog"/>
       </Link>
+      <button type="button" className="md:hidden text-slate-50">
+        <MenuIcon />
+      </button>
       <nav className="flex gap-6">{
         items?.map(item => {
           return (

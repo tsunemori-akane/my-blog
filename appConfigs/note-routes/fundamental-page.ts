@@ -53,8 +53,8 @@ export const fundamental =
           route: "/docs/fundamental/polyfill/debounceandthrottle",
         },
         {
-          name: "pipe&compose",
-          route: "/docs/fundamental/polyfill/pipe_compose",
+          name: "工具方法",
+          route: "/docs/fundamental/polyfill/toolFns",
         },
         {
           name: "expressions相关",

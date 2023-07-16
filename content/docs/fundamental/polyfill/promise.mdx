@@ -1,15 +1,18 @@
 ---
-title: '实现promise'
-description: 'Implement promise'
+title: "实现promise"
+description: "Implement promise"
 ---
 
 ## 简单了解
-参阅[MDN Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) 
+
+参阅[MDN Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)
+
 1. Promise 主要用来改进异步编程体验
 2. Promise 有三个状态`pending`、`fullfilled`、`rejected`
-3. `fullfilled`的Promise实例会转入`.then()`处理；`rejected`会转入`.catch()`处理
+3. `fullfilled`的 Promise 实例会转入`.then()`处理；`rejected`会转入`.catch()`处理
 
-## promise类的结构
+## promise 类的结构
+
 ```js
 const PENDING = "pending";
 const FULLFILLED = "fullfilled";
@@ -30,14 +33,15 @@ class MyPromise {
   then(onfullfilled, onrejected) {}
   catch(onrejected) {}
   finally(cb) {}
-  static resolve (arg) {}
-  static reject (arg) {}
-  static all (promises) {}
-  static race (promises) {}
+  static resolve(arg) {}
+  static reject(arg) {}
+  static all(promises) {}
+  static race(promises) {}
 }
 ```
 
 ## resolve
+
 ```js
 resolve(x) {
   if(this.state === PENDING) {
@@ -55,10 +59,13 @@ resolve(x) {
   }
 }
 ```
+
 ## static resolve
+
 ```js
 static resolve(arg) {
   return new MyPromise((resolve, reject) => {
+    // 判断 arg是否promise
     if(arg !== null && typeof arg ==="object" && typeof arg.then === "function") {
       arg.then(resolve, reject);
     } else {
@@ -69,6 +76,7 @@ static resolve(arg) {
 ```
 
 ## reject
+
 ```js
 reject(r) {
   if(this.state === PENDING) {
@@ -86,7 +94,8 @@ reject(r) {
 ```
 
 ## then
-```js
+
+```js /onfullfilled/
 then(onfullfilled, onrejected) {
   onfullfilled = typeof onfullfilled === "function" ? onfullfilled : value => value;
   onrejected = typeof onrejected === "function" ? onrejected : reason => reason;
@@ -119,11 +128,28 @@ then(onfullfilled, onrejected) {
 ```
 
 ## finally
-```js
 
+```js
+finally (cb) {
+  return this.then((x) => {
+    // cb 如果 也是 promise
+    return MyPromise.resolve(cb()).then(() => x);
+  }, (r) => {
+    return MyPromise.reject(cb()).then(null, () => x);
+  });
+}
+```
+
+## catch
+
+```js
+catch (onrejected) {
+  return this.then(null, onrejected);
+}
 ```
 
 ## race
+
 ```js
 static race (promises) {
   return new MyPromise((resolve, reject) => {
@@ -141,6 +167,7 @@ static race (promises) {
 ```
 
 ## all
+
 ```js
 static all(promises) {
   return new MyPromise((resolve, reject) => {
@@ -162,4 +189,68 @@ static all(promises) {
     }
   });
 }
+```
+
+## 其它
+
+### 延迟执行队列
+
+```ts
+//@vueuse/core useTimeoutFn
+async function* makeQueue<T>(jobs: T[], waitGap: number) {
+  for (const i of jobs) {
+    await new Promise((resolve) => {
+      useTimeoutFn(() => {
+        resolve(true);
+      }, waitGap);
+    });
+    yield i;
+  }
+}
+
+const repeat = (fn: Function, waitGap: number) => {
+  return async function (arg: Bullet[]) {
+    for await (const i of makeQueue(arg, waitGap)) {
+      fn(i);
+    }
+  };
+};
+
+const repeatPlay = repeat(fn.bind(/* your this*/), 3000);
+```
+
+```js
+class Queue{
+	constructor(){
+		this.taskList = []
+	}
+	task(delay,fn){
+		function callback(){
+			return new Promise(function(resolve){
+				setTimeout(() => {
+					fn()
+					resolve()
+				}, delay);
+			})
+		}
+		this.taskList.push(callback)
+		return this
+	}
+	async start(){
+		while(this.taskList.length){
+			await this.taskList.shift()()
+		}
+	}
+}
+new Queue()
+	.task(1000, () => {
+		console.log(1)
+	})
+	.task(2000, () => {
+		console.log(2)
+	})
+	.task(1000, () => {
+		console.log(3)
+	})
+	.start()
 ```

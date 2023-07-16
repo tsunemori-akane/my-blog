@@ -8,7 +8,7 @@ export function BlockLink({ href, icon, title}) {
       href={href}
       className={cn(
         'group flex flex-col justify-start overflow-hidden rounded-lg border border-gray-200 bg-gray-100 text-current no-underline shadow shadow-gray-100 transition-all duration-200',
-        'hover:border-gray-300 hover:shadow-lg hover:bg-slate-50 hover:shadow-md hover:shadow-gray-100',
+        'hover:border-gray-300 hover:bg-slate-50 hover:shadow-md hover:shadow-gray-100',
         'active:shadow-sm active:shadow-gray-200'
       )}
     >
