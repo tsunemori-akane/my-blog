@@ -1,0 +1,100 @@
+---
+title: "迭代器和生成器"
+description: "迭代器和生成器"
+---
+
+## 可迭代对象
+```js
+typeof obj[Symbol.iterator] == 'function'
+```
+### Iterator协议-迭代器模式
+```js
+interface $Interator {
+  [Symbol.iterator](): object;
+}
+class IteratorObject implements $Interator {
+  private data = {};
+  private step = 0;
+  private keys = [];
+  constructor(data: object) {
+    this.data = data;
+    this.keys = Object.keys(data) as [];
+  }
+  public next() {
+    let result { value: undefined, done: true };
+    if(this.step < this.keys.length) {
+      result = { value: this.data[this.keys[this.step]], done: false };
+      this.step ++;
+    }
+    return result;
+  }
+  public [Symbol.iterator]() {
+    return this;
+  }
+}
+```
+
+## 生成器
+
+<div className="grid grid-cols-2 gap-4">
+<div>
+
+```js showLineNumbers
+var x = 1;
+function *foo() {
+  x++;
+  x = yield x++;
+  console.log("x:", ++x);
+  return x
+}
+let iterator = foo();
+console.log(iterator.next());
+console.log(iterator.next(3));
+console.log(iterator.next());
+```
+</div>
+<div>
+1. 执行foo()并没有执行生成器`*foo()`, 而只是构造了一个迭代器
+2. 第一个next启动了生成器, 并执行了第一行x++
+3. `*foo()`在yield语句处暂停, 并向next调用处返回`{value: 2, done: false}`, 此时`*foo()`处于暂停状态
+4. 第二个next恢复生成器执行第4行, 打印出`{value: 4, done: true}`
+</div>
+</div>
+
+### 原理UML类图
+<Image src="/images/fundamental/UMLGenerator.webp" height={600} width={800} alt="generators"/>
+
+### 具体实现
+```js title="main.js"
+let { userFunc } = require("./userFunc")
+let { generator } = require("./generator")
+function main() {
+  let gen$ = generator(userFunc);
+  let iterator = gen$();
+  console.log(iterator.next());
+}
+main();
+```
+```js title="userFunc.js"
+function userFunc(_context) {
+  var str;
+  return function() {
+    while(1) {
+      switch((_context.pre = _context.next)) {
+        case 0:
+          _context.next = 1;
+          return "hello";
+        case 1:
+          str = _context.arg;
+          console.log(str);
+          _context.next = 3;
+          return "world";
+        case 3:
+          return _context.complete("return", "ending");
+        case "end":
+          return _context.stop();
+      }
+    }
+  }
+}
+```

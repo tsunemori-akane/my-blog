@@ -5,5 +5,9 @@ export const AlgorithmRoutes = [
   {
     name: "回溯法",
     route: "/algorithm/back-track",
+  },
+  {
+    name: "动态规划",
+    route: "/algorithm/dynamicProgramming"
   }
 ];

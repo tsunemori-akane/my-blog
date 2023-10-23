@@ -1,0 +1,88 @@
+---
+title: "动态规划"
+description: ”Dynamic Programming“
+---
+
+## 零钱问题 leetcode 322
+1. 变种1
+> 给出n种硬币，每种硬币数量不限
+> 给出目标值target
+> 求出得到目标值所需最少硬币数量 <br/>
+状态转移方程: 定义 `f[i][j]` 表示使用前`i`种硬币， 凑出金额`j`的最少硬币数量 <br/>
+`f[i][j] = Math.min(f[i-1][j], f[i][j - coins[i-1]] + 1)`
+```js title="solution 1（二维数组）" showLineNumbers
+/**
+ * @params {number[]} coins
+ * @params {number} amount
+ * @return {number}
+ */
+var coinChange = function (coins, amount) {
+  const m = coins.length;
+  const n = amount;
+  const f = Array(m+1).fill(0).map(() => Array(n+1).fill(Infinity))
+  f[0][0] = 0;
+  for(let i = 1; i <= m; ++i) {
+    for(let j = 0; j <= n; ++j) {
+      if(j < coins[i-1]) {
+        f[i][j] = f[i-1][j]
+      }else {
+        f[i][j] = Math.min(f[i-1][j], f[i][j - coins[i-1]] + 1)
+      }
+    }
+  }
+  return f[m][n] > n ? -1 : f[m][n]
+}
+```
+
+```js title="solution 2（一维数组优化解法）" showLineNumbers
+/**
+ * @params {number[]} coins
+ * @params {number} amount
+ * @return {number}
+ */
+var coinChange = function (coins, amount) {
+  const n = amount;
+  const dp = new Array(n + 1).fill(Infinity);
+  dp[0] = 0
+  for(const x of coins) {
+    for(let j = x; j <= n; ++j) {
+      dp[j] = Math.min(dp[j], dp[j - x] + 1)
+    }
+  }
+  return dp[n] > n ? -1 : dp[n];
+}
+```
+2. 变种2
+> 给出n种硬币，每种硬币数量不限
+> 给出目标值target
+> 求出得到目标值的所有不同的表示法 <br/>
+状态转移方程: 定义 `f[i][j]` 表示使用前`i`种硬币， 凑出金额`j`的不同表示方法的数量 <br/>
+`f[i][j] = f[i-1][j] + f[i][j - coins[i-1]]` <br/>
+- 解释：不选当前币值 `+` 选择至少一个当前币种 
+
+## 打家劫舍
+> 一行数组`nums`表示沿街一排房屋现金数量
+> 相邻房屋不能同时偷窃
+> 问一次偷取最大现金数量 <br/>
+- 分析：不选第n个 + 加上第n个的情况
+- 加上第n个时, 若选择了`n-1`, dp[n] = dp[n-1]
+- 若不选择`n-1`, dp[n] = dp[n-2] + nums[n] 
+状态转移方程: dp[n] = max(dp[n-1], dp[n-2] + nums[n])
+```js
+var rob = function(nums) {
+  const len = nums.length
+  if(len == 0) {
+    return 0
+  }
+  if(len == 1) {
+    return nums[0]
+  }
+  const dp = new Array(len).fill(0)
+  dp[0] = nums[0]
+  dp[1] = Math.max(nums[0], nums[1])
+  for(let i = 2; i < len ;i++) {
+    dp[i] = Math.max(dp[i-1], dp[i-2] + nums[i])
+  }
+  return dp[len-1];
+}
+```

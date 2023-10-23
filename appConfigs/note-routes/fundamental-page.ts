@@ -36,6 +36,10 @@ export const fundamental =
           route: "/docs/fundamental/polyfill/array",
         },
         {
+          name: "迭代器生成器",
+          route: "/docs/fundamental/polyfill/generator",
+        },
+        {
           name: "Object方法",
           route: "/docs/fundamental/polyfill/object",
         },
