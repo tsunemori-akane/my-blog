@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Script from "next/script";
 
 export function PageSEO ({frontmatter}) {
   const title = frontmatter.title ?? ''
@@ -13,14 +14,14 @@ export function PageSEO ({frontmatter}) {
         <meta property="og:title" content={title}></meta>
         <meta property="og:description" content={description}></meta>
       </Head>
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q0ES402K4M"></script>
-      <script>
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-Q0ES402K4M"></Script>
+      <Script>
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
         gtag('config', 'G-Q0ES402K4M');
-      </script>
+      </Script>
     </>
   )
 }
