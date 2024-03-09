@@ -22,8 +22,8 @@ export const DocsMainPageRoute = [
         </svg>
       )
     },
-    title: 'JSBundle',
-    href: '/docs/jsBundler/js_modules'
+    title: 'JsColl',
+    href: '/docs/jsColl/js_modules'
   },
   {
     icon: () => {

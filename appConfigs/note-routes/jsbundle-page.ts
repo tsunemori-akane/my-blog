@@ -1,30 +1,34 @@
-export const jsBundler = {
-  name: "JsBundle",
-  prefix: "/docs/jsBundler",
+export const jsColl = {
+  name: "JsColl",
+  prefix: "/docs/jsColl",
   children: [
     {
       name: 'JS Modules',
-      route: '/docs/jsBundler/js_modules'
+      route: '/docs/jsColl/js_modules'
     },
     {
       name: 'Module Bundling',
-      route: '/docs/jsBundler/module_bundling'
+      route: '/docs/jsColl/module_bundling'
     },
     {
       name: 'Tapable介绍',
-      route: '/docs/jsBundler/tapable'
+      route: '/docs/jsColl/tapable'
     },
     {
       name: 'Monorepo',
-      route: '/docs/jsBundler/monorepo'
+      route: '/docs/jsColl/monorepo'
     },
     {
       name: 'PubSub发布订阅',
-      route: '/docs/jsBundler/pub_sub'
+      route: '/docs/jsColl/pub_sub'
+    },
+    {
+      name: '页面响应式',
+      route: '/docs/jsColl/responsive'
     },
     {
       name: 'TS Cheatsheet',
-      route: '/docs/jsBundler/ts_cheatsheet'
+      route: '/docs/jsColl/ts_cheatsheet'
     }
   ]
 };

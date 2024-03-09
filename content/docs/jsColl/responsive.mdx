@@ -1,0 +1,159 @@
+---
+title: '媒体查询-响应式监听'
+description: 'Media Queries'
+---
+
+## Basic media query looks like in CSS
+```css
+@media only screen and (max-width: 576px) {
+  // do something
+}
+// set the width range
+@media only screen and (min-width: 360px) and (max-width: 768px) {
+  // do something
+}
+```
+
+## How to response to width changes in javascript
+The answer is [MediaQueryList](https://developer.mozilla.org/en-US/docs/Web/API/MediaQueryList)
+
+### 定义基本类型以及相应方案
+```ts
+const responsiveMap = {
+  xs: "(max-width: 575px)",
+  sm: "(min-width: 576px) and (max-width: 767px)",
+  md: "(min-width: 768px) and (max-width: 991px)",
+  lg: "(min-width: 992px)",
+} as const;
+
+export type Breakpoint = keyof typeof responsiveMap;
+export type ScreenMap = Partial<Record<Breakpoint, boolean>>;
+export type SubscribeFunc = (
+  screens: ScreenMap,
+  breakpointChecked: Breakpoint
+) => void;
+export type MediaQueryResult = { matches: boolean };
+export type MediaQueryListener = ({ matches }: MediaQueryResult) => void;
+export type responsiveMapValue<T extends Object> = {
+  [key in keyof T]: T[key];
+}[keyof T];
+```
+
+### 第一部分
+```ts
+class ResponsiveObserver {
+  #uid: number;
+  #subscribers: Array<{
+    token: string;
+    func: SubscribeFunc;
+  }>;
+  // 存储token及对应的回调
+  #screens: ScreenMap = {};
+  /* 监听的MediaQueryList对象及监听函数listener
+  ** listener会执行#subscribers中的回调func
+   */
+  #matchHandlers: Partial<
+    Record<
+      responsiveMapValue<typeof responsiveMap>,
+      {
+        mql: MediaQueryList;
+        listener: MediaQueryListener;
+      }
+    >
+  >;
+
+  constructor() {
+    this.#subscribers = [];
+    this.#matchHandlers = {};
+    this.#screens = {};
+    this.#uid = 0;
+  }
+```
+### 第二部分
+```ts
+#registerLisener() {
+  (Object.keys(responsiveMap) as Breakpoint[]).forEach((e) => {
+    const matchMediaQuery = responsiveMap[e];
+    if (!matchMediaQuery) return;
+    const listener = ({ matches }: MediaQueryResult) => {
+      this.#dispath(matches, e);
+    };
+    const mql = window.matchMedia(matchMediaQuery);
+    if (mql.addEventListener) {
+      mql.addEventListener("change", listener);
+    }
+    this.#matchHandlers[matchMediaQuery] = {
+      mql,
+      listener,
+    };
+    listener(mql);
+  });
+}
+
+#dispath(matches: boolean, screen: Breakpoint) {
+  this.#screens = { ...this.#screens, [screen]: matches };
+  this.#subscribers.forEach((item) => {
+    item.func(this.#screens, screen);
+  });
+  return true;
+}
+```
+### 第三部分
+```ts
+#registerLisener() {
+  (Object.keys(responsiveMap) as Breakpoint[]).forEach((e) => {
+    const matchMediaQuery = responsiveMap[e];
+    if (!matchMediaQuery) return;
+    const listener = ({ matches }: MediaQueryResult) => {
+      this.#dispath(matches, e);
+    };
+    const mql = window.matchMedia(matchMediaQuery);
+    if (mql.addEventListener) {
+      mql.addEventListener("change", listener);
+    }
+    this.#matchHandlers[matchMediaQuery] = {
+      mql,
+      listener,
+    };
+    listener(mql);
+  });
+}
+
+#unRegisterListener() {
+  (Object.keys(responsiveMap) as Breakpoint[]).forEach((screen) => {
+    const matchMediaQuery = responsiveMap[screen];
+    if (!matchMediaQuery) return;
+    const handler = this.#matchHandlers[matchMediaQuery];
+    if (handler && handler.mql && handler.listener) {
+      if (handler.mql.removeEventListener) {
+        handler.mql.removeEventListener("change", handler.listener);
+      }
+    }
+  });
+}
+```
+
+### 第四部分
+```ts title="实例入口"
+  subscribe(func: SubscribeFunc) {
+    if (this.#subscribers.length === 0) {
+      this.#registerLisener()
+    }
+    const token = "uid" + ++this.#uid
+    this.#subscribers.push({
+      token, func
+    })
+    func(this.#screens, null as unknown as Breakpoint);
+    return token
+  }
+
+  unSubscribe(token: string) {
+    const _subscriber = this.#subscribers.filter(item => {item.token !== token})
+    if(_subscriber.length === 0) {
+      this.#unRegisterListener()
+    }
+  }
+}
+const responsiveObserverInstance = new ResponsiveObserver()
+export default responsiveObserverInstance
+```
