@@ -12,7 +12,7 @@ function Dropdownbar({name, open, onPress}) {
 
   return (
     <button 
-      className='mt-5 flex w-full' 
+      className='mt-2 flex w-full' 
       onClick={onPress}
     >
       <span 
@@ -32,10 +32,10 @@ function Dropdownlistitem({route, name, disabled}) {
   const pathname = usePathname()
   return (
     <div className={cn(
-      'flex items-center mb-1 rounded-md py-2',
+      'flex items-center rounded-md py-2',
       'before:content-[""] before:block before:w-1 before:h-1 before:mr-4 before:rounded-full before:bg-[#666] last:mb-0',
       {
-        "bg-slate-200": pathname === route
+        "bg-gradient-to-r from-transparent to-stone-200": pathname === route
       }
       )}
     >
@@ -147,7 +147,7 @@ function FolderImpl ({item}) {
         onPress={handleClickDropdown}
       />
       <Collapse open={open}>
-        <div className='mt-4 h-auto border-l-[#d4d4d4] border-l pl-7'>
+        <div className='mt-1 h-auto border-l-[#d4d4d4] border-l pl-7'>
           <RecursiveMenu dir={item.children} />
         </div>
       </Collapse>

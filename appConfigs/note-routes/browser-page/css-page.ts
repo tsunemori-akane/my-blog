@@ -5,23 +5,23 @@ export const css =
   children: [
     {
       name: 'How css work',
-      route: '/docs/css/how_css_work'
+      route: '/docs/browser/css/how_css_work'
     },
     {
       name: 'Css Animations',
-      route: '/docs/css/css_animate'
+      route: '/docs/browser/css/css_animate'
     },
     {
       name: 'Mobile Adaption',
-      route: '/docs/css/mobileAdaption'
+      route: '/docs/browser/css/mobileAdaption'
     },
     {
       name: 'Css Modules',
-      route: '/docs/css/css_modules'
+      route: '/docs/browser/css/css_modules'
     },
     {
       name: 'Css Problem',
-      route: '/docs/css/css_frustrating_ques'
+      route: '/docs/browser/css/css_frustrating_ques'
     },
   ]
 };

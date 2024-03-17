@@ -4,7 +4,7 @@ export const html = {
   children: [
     {
       name: '关于seo',
-      route: '/docs/html/seo'
+      route: '/docs/browser/html/seo'
     },
   ]
 }

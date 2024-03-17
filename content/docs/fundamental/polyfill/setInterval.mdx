@@ -1,0 +1,34 @@
+---
+title: '定时器'
+description: '实现定时器'
+---
+## problem
+Neither `setInterval()` nor `setTimeout()` are intended to be precise.
+The delay you specify as the second argument is only an indication 
+of when the code is added in the browser's UI thread queue for possible execution.
+If there are other jobs in the queue ahead of it, then that code waits to be executed.
+In short: the millisecond delay is not an indication of when the code will be executed,
+only an indication of when the job will be queued. If the UI thread is busy,
+perhaps dealing wit huser actions, then that code will not execute immediately.
+
+## requestAnimationFrame
+```javascript
+var lastTime = 0
+if(!window.requestAnimationFrame) {
+  window.requestAnimationFrame = function(callback, element) {
+    var currtime = new Date().getTime()
+    var timeToCall = Math.max(0, 16 - (currtime - lastTime))
+    var id = window.setTimeout(function() {
+      callback(currtime + timeToCall)
+    }, timeToCall);
+    lastTime = currtime + timeToCall
+    return id
+  }
+}
+
+if(!window.cancelAnimationFrame) {
+  window.cancelAnimationFrame = function(id) {
+    clearTimeout(id)
+  }
+}
+```

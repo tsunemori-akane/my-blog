@@ -28,7 +28,7 @@ export const fundamental =
       route: "/docs/fundamental/eventLoop",
     },
     {
-      name: "垫片polyfill",
+      name: "polyfill",
       prefix: "/docs/fundamental/polyfill",
       children: [
         {
@@ -63,6 +63,10 @@ export const fundamental =
         {
           name: "expressions相关",
           route: "/docs/fundamental/polyfill/expressions",
+        },
+        {
+          name: "定时器",
+          route: "/docs/fundamental/polyfill/setInterval",
         },
       ]
     },
