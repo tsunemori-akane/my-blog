@@ -8,6 +8,10 @@ export const MainNavRoute = [
     route: "/algorithm",
   },
   {
+    name: "Golang",
+    route: "/golang",
+  },
+  {
     name: "Playground",
     route: "/playground"
   }

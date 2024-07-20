@@ -8,21 +8,32 @@ description: "手写防抖节流"
   ## 场景
   - 按钮防止重复点击
   - 搜索框连续输入的情况等输入停止后再搜索
-  - 浏览器窗口大小变化仅需要出发一次事件
+  - 浏览器窗口大小变化仅需要触发一次事件
 </Card>
-```js
-//debounce
-let timer = null;
+```ts
+//debounce antvis/utils
+function debounce(func: Function, wait?: number, immediate?: boolean) {
+  let timeout; 
 
-function debounce(fn, wait, ...arg) {
-    if(timer) {
-        clearTimeout(timer);
-        timer = null;
+  return function () {
+    const context = this,
+      args = arguments;
+    const later = function () {
+      timeout = null;
+      if (!immediate) {
+        func.apply(context, args);
+      }
+    };
+    const callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) {
+      func.apply(context, args);
     }
-    timer = setTimeout(() => {
-        fn.apply(this, ...arg);
-    }, wait)
+  };
 }
+
+export default debounce;
 ```
 - 节流
 ```js
@@ -35,5 +46,29 @@ function throttle(fn, gapTime, ...arg) {
         fn.apply(this, ...arg);
         last = nowTime;
     }
+}
+```
+
+```ts
+// throttle by requestanimation
+export function throttleByRaf(cb: (...args: any[]) => void) {
+  let timer = 0;
+
+  const throttle = (...args: any[]): void => {
+    if (timer) {
+      cancelAnimationFrame(timer);
+    }
+    timer = requestAnimationFrame(() => {
+      cb(...args);
+      timer = 0;
+    });
+  };
+
+  throttle.cancel = () => {
+    cancelAnimationFrame(timer);
+    timer = 0;
+  };
+
+  return throttle;
 }
 ```

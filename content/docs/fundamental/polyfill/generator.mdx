@@ -97,4 +97,78 @@ function userFunc(_context) {
     }
   }
 }
+exports.userFunc = userFunc
+```
+```js title="generator.js"
+let { invoker } = require("./invoker");
+let { Context } = require("./context");
+let { Iterator } = require("./iterator");
+function generator(userFunc) {
+  return function() {
+    let context = new Context()
+    let generatorInvoker = invoker(userFunc, context)
+    return Iterator(generatorInvoker, context)
+  }
+}
+exports.generator = generator
+```
+```js title="context.js"
+class Context {
+  done = false
+  value = undefined
+  next = 0;
+  complete(type, result) {
+    if(type === "return") {
+      this.value = result;
+      this.next = "end";
+    }
+    return null;
+  }
+  stop() {
+    this.done = true;
+    return this.value
+  }
+}
+exports.Context=Context
+```
+```js title="invoker.js"
+function invoker(userFunc, context) {
+  // 状态设置为start
+  var state = 'start'
+  var userFunc$1 = userFunc(context);
+  return function generatorInvoker(arg) {
+    // 已完成
+    if(state === "completed") {
+      return { value:undefined, done: true}
+    }
+    context.arg = arg;
+    // 执行中
+    while(true) {
+      let result = userFunc$1() // 执行下一步，并获取状态 switch 里面return的值
+      // 判断是否已经执行完成
+      state = context.done ? "completed" : "yield";
+      if(result === null) {
+        continue
+      }
+      return {
+        value: result,
+        done: context.done
+      }
+    }
+  }
+}
+```
+```js title="iterator.js"
+function Iterator(generatorInvoker, context) {
+  return {
+    next: (arg)=> {
+      context.method = "next";
+      return generatorInvoker(arg);
+    },
+    ['throw']: (arg)=> {
+      context.method = "throw";
+      generatorInvoker(arg);
+    }
+  }
+}
 ```
