@@ -1,0 +1,72 @@
+---
+title: "Interface Compliance"
+description: ”Interface Compliance“
+---
+
+## Developing your own package
+```go title="myInterface.go" showLineNumbers
+package myInterface
+
+type Shape interface {
+	Area() float64
+	Perimeter() float64
+}
+```
+Then you need to install external package `myInterface`.
+- go mod init `<name>`
+- copy `myInterface.go` <br/>
+	cp myInterface.go /usr/local/go/src/myInterface
+- go install myInterface
+
+### How to use it 
+You cannot execute a Go package if it does not include a main() function.
+But you are still allowed to compile it and crreate an object file. <br/>
+go tool compile myInterface.go
+
+## Use the interface
+### implement the shape interface for various data type
+```go title="useInterface" showLineNumbers
+package main
+import (
+	"fmt"
+	"math"
+	"myInterface"
+)
+type square struct {
+	X float64
+}
+type circle struct {
+	R float64
+}
+func (s square) Area() float64 {
+	return s.X * s.X
+}
+func (s square) Perimeter() float64 {
+	return s.X * 4
+}
+func (s circle) Area() float64 {
+	return s.R * s.R * math.Pi
+}
+func (s circle) Perimeter() float64 {
+	return s.R * math.Pi * 2
+}
+func Calculate(x myInterface.Shape) {
+	_, ok := x.(circle)
+	if ok {
+		fmt.Println("Is a circle")
+	}
+	v, ok := x.(square)
+	if ok {
+		fmt.Println("Is a square:", v)
+	}
+	fmt.Println(x.Area())
+	fmt.Println(x.Perimeter())
+}
+
+func main() {
+	x := square{X: 10}
+	fmt.Println("Perimeter:", x.X, x.Area())
+	Calculate(x)
+}
+
+```

@@ -6,7 +6,7 @@ import { TOC } from "#/components/table-of-content"
 import path from 'node:path'
 import { ActiveAnchorProvider } from "#/components/contexts/activeAnchorProvider"
 import { PageSEO } from "#/components/mdx-head"
-import { NoteRoutes } from "#/appConfigs/note-routes"
+import { GolangRoutes } from "#/appConfigs/go-routes"
 
 const contentDir = 'content/golang'
 const root = process.cwd()
@@ -30,7 +30,7 @@ export default function Page({slug, mdxSource, toc, frontmatter}) {
   )
 }
 Page.PageLayout = (page) => {
-  return <DocLayout routes={NoteRoutes}>{page}</DocLayout>
+  return <DocLayout routes={GolangRoutes}>{page}</DocLayout>
 }
 
 export async function getStaticPaths() {
